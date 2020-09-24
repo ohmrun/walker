@@ -6,7 +6,7 @@ class Spec{
 typedef NodeSpecDef<T> = {
               public var id(default,null):Id;
   @:optional  public var type(default,null):Selectable;
-  @:optional  public var call(default,null):Handler<T>;
+  @:optional  public var call(default,null):Call<T>;
   @:optional  public var rest(default,null):ChildrenSpec<T>;
 }
 @:forward abstract NodeSpec<T>(NodeSpecDef<T>) from NodeSpecDef<T> to NodeSpecDef<T>{
