@@ -7,5 +7,6 @@ using stx.Nano;
 using stx.Ds;
 using stx.Fp;
 using stx.Assert;
+using stx.Log;
 
 using ohmrun.Hsm;

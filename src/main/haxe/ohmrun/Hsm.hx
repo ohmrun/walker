@@ -1,8 +1,5 @@
 package ohmrun;
 
-typedef NodeSpec<T>       = ohmrun.hsm.Spec.NodeSpec<T>;
-typedef ChildrenSpec<T>   = ohmrun.hsm.Spec.ChildrenSpec<T>;
-
 class Hsm{
   static public function id(wildcard:Wildcard,name:String,?uuid:String):Id{
     return Id.make(name,__.option(uuid));
@@ -27,7 +24,11 @@ class Hsm{
     }
   }
 }
+typedef HsmFailure                    = ohmrun.hsm.HsmFailure;
 typedef Spec                          = ohmrun.hsm.Spec;
+typedef NodeSpec<T>                   = ohmrun.hsm.Spec.NodeSpec<T>;
+typedef ChildrenSpec<T>               = ohmrun.hsm.Spec.ChildrenSpec<T>;
+
 typedef IdDef                         = ohmrun.hsm.Id.IdDef;
 typedef Id                            = ohmrun.hsm.Id;
 
@@ -67,7 +68,6 @@ typedef CallsDef<T> = stx.ds.RedBlackMap<String,Selector>;
     );
   }
 }
-
 class Machine<T>{
   public var state(default,null):State<T>;
 }

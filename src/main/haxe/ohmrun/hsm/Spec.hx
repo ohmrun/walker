@@ -19,11 +19,22 @@ typedef NodeSpecDef<T> = {
       () -> this.id.toString()
     );
   }
+  public function toTree():Tree<T>{
+    var node : Node<T> = new NodeCls(this.id,__.option(this.type).defv(One),this.call);
+    
+    var rest = __.option(this.rest).defv([]).rfold(
+      (next:NodeSpec<T>,memo:LinkedList<KaryTree<Node<T>>>) -> memo.cons(next.toTree()),
+      LinkedList.unit()
+    );
+    var head = rest.is_defined().if_else(() -> Branch(node,rest),() -> Branch(node));
+    return Tree.lift(head);
+  }
 }
 typedef ChildrenSpecDef<T> = Array<NodeSpec<T>>;
 
-abstract ChildrenSpec<T>(ChildrenSpecDef<T>) from ChildrenSpecDef<T> to ChildrenSpecDef<T>{
+@:forward abstract ChildrenSpec<T>(ChildrenSpecDef<T>) from ChildrenSpecDef<T> to ChildrenSpecDef<T>{
   public function toString(){
     return this.map( _ -> _.toString() );
   }
+
 }

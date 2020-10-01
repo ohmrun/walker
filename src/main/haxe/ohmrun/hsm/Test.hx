@@ -1,5 +1,7 @@
 package ohmrun.hsm;
 
+using Lambda;
+
 import ohmrun.hsm.Spec;
 
 import ohmrun.Hsm.*;
@@ -39,17 +41,80 @@ class HsmTest extends TestCase{
       (phase) -> phase,
       []
     );
-    var state : NodeSpec<Dynamic> = all(
+    var spec : NodeSpec<Dynamic> = all(
       "0",[
         one("0_0",
           [
-            all("0_0_0", (phase) -> phase)
+            all("0_0_0", 
+              (phase) -> phase,
+              [
+                one("0_0_0_0",
+                  [
+                    all("0_0_0_0_0"),
+                    all("0_0_0_0_1")
+                  ]
+                ),
+                one("0_0_0_1",
+                  [
+                    all("0_0_0_1_0"),
+                    all("0_0_0_1_1")
+                  ]
+                )
+              ]
+            ),
+            all("0_0_1",
+              [
+                one("0_0_1_0",
+                  [
+                    all("0_0_1_0_0"),
+                    all("0_0_1_0_1")
+                  ]
+                ),
+                one("0_0_1_1",
+                  [
+                    all("0_0_1_1_0"),
+                    all("0_0_1_1_1")
+                  ]
+                )
+              ]
+            )
           ]
         ),
-        one("0_1")
+        one("0_1",
+          [
+            all("0_1_0"),
+            all("0_1_1")
+          ]
+        )
       ]
     );
-    trace(state);
+    trace(spec);
+    var tree = spec.toTree();
+    trace(tree);
+
+    /*
+    trace(tree.toString());
+    var next = tree.path(["0_0","0_0_1"]);
+    trace(next.value().map(x -> x.toString()));
+
+    var next = tree.path(["0_0","0_0_0"]);
+    trace(next.value().map(x -> x.toString()));
+    */
+    var p : Path   =  ["0_0","0_0_1","0_0_1_1","0_0_1_1_1"];
+    //var path =  tree.path(p);
     
+    var transition = Tree.divergence(tree,p);
+    trace(transition);
+    
+    for(t in transition.value()){
+      var bfo = t.from.bf().array().reversed();
+      for(v in bfo){
+        trace(v);
+      }
+      var bfi = t.into.bf();
+      for(v in bfi){
+        trace(v);
+      }
+    }
   }
 } 
