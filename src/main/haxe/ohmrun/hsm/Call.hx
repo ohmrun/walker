@@ -46,12 +46,14 @@ typedef CallDef<T,G> = ArrowletDef<Context<T,G>,Res<G,HsmFailure>,Noise>;
   }
 }
 class CallLift{
-  static public function environment<T,G>(self:Call<T,G>,ctx:Context<T,G>,success,failure){
+  static public function environment<T,G>(self:Call<T,G>,ctx:Context<T,G>,success:G->Void,failure:Err<HsmFailure>->Void){
     return Arrowlet._.environment(
       self,
       ctx,
-      success,
-      failure
+      (res:Res<G,HsmFailure>) -> {
+        res.fold(success,failure);
+      },
+      __.crack
     );
   }
 }

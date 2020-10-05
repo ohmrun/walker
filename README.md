@@ -1,5 +1,71 @@
 # State Machine
 
+## Usage
+```haxe
+using ohmrun.Hsm;//import package;
+import ohmrun.Hsm.*;//constructors root(), all() and one() pulled into the global scope.
+ class Main{
+  static function main(){
+  var state = {
+ 
+  }
+  var spec = all("root",
+    (ctx:Context<Dynamic,Dynamic>) -> {
+      return ctx.global;//This is an Arrowlet, so has all Async powers
+    },
+    [
+    one(
+      "switch",[
+        all("off"),//default state in switch
+        one(
+          "on",
+          [
+            all("working"),//default substate of "on"
+            all("intermittent")
+          ]
+        )
+      ]
+    )
+    ]
+  );
+  var path0 : Path = ["switch","on"];//defaults to ["switch","on","working"]
+  var path1 : Path = ["switch","on","intermittent"];
+
+  var tree         = spec.toTree();
+  var machine0     = new Machine(tree);
+  var init         = machine0.activator();
+
+  //Res.value -> Option
+  //Option.fudge -> Null<Transition>
+
+  var transition0  = machine0.to(path0).value().fudge();//if it's a bad path, an error will be thrown on `fudge`
+  
+  var machine1     = transition0.next();//get the state of the Machine as it would be after transition0.
+
+  //make sure you are using the right basis for a transition.
+  //machine0.call(path1) is not the samee as machine1.call(path1)
+  var transition1  = machine1.to(path1).value().fudge();
+  
+
+  //compose the calls
+  var sequence : Call<Dynamic,Dynamic> = init.reply().seq(transition0.reply()).seq(transition1.reply());
+  //provide the environment to the Arrowlet to produce a Thread.
+  var thread = sequence.environment(
+    Context.make("hello",state),
+    (x:Dynamic) -> {
+      async.done();
+      //x is the G (Global) Type
+    },
+    __.crack
+  );
+  //submit the thread to the scheduler
+  thread.submit();
+  }
+ }
+  ```
+### Development
+  It look to me like event mapping is a seperate concern, and I'll be working on that next.
+  Something like `activator().reply().seq(reactor)` where `reactor` is under cogitation
 
 ### Context
   The `Context` available to a `Call` contains two generic parameters.
