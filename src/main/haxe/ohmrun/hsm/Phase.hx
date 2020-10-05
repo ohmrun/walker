@@ -1,10 +1,9 @@
 package ohmrun.hsm;
 
-enum PhaseSum<T>{
+enum PhaseSum{
   Enter;
-  Update(v:T);
   Leave;
 }
-abstract Phase<T>(PhaseSum<T>) from PhaseSum<T> to PhaseSum<T>{
+abstract Phase(PhaseSum) from PhaseSum to PhaseSum{
   
 }

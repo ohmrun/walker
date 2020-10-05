@@ -3,19 +3,22 @@ package ohmrun.hsm;
 using Lambda;
 
 import ohmrun.hsm.Spec;
-
 import ohmrun.Hsm.*;
 
-import haxe.unit.TestCase;
+
+using ohmrun.hsm.Test;
 
 class Test{
+  static public function log(wildcard:Wildcard):Log{
+    return new stx.Log().tag("ohmrun.hsm.test");
+  }
   static public function main(){
-    __.test([
+    utest.UTest.run([
       new HsmTest()
     ]);
   }
 }
-class HsmTest extends TestCase{
+class HsmTest extends utest.Test{
   public function _test_build_tree_0(){
     var node  = Hsm.root();
     var tree  = new KaryTree();
@@ -36,17 +39,24 @@ class HsmTest extends TestCase{
 
     var tree  = tpII.snd().toTree();
   }
-  public function test_declare_node(){
+  @:timeout(2000)
+  public function test_declare_node(async:utest.Async){
     var node  = one('0_0_1',
-      (phase) -> phase,
+      (phase) -> {},
       []
     );
-    var spec : NodeSpec<Dynamic> = all(
-      "0",[
+    var spec : NodeSpec<Any,Any> = all(
+      "0",
+      [
         one("0_0",
+          (ctx:Context<Any,Any>) -> {
+            __.log()('${ctx.phase} "0_0"');
+          },
           [
             all("0_0_0", 
-              (phase) -> phase,
+              (ctx:Context<Any,Any>) ->{
+                __.log()('${ctx.phase} "0_0_0"');
+              },
               [
                 one("0_0_0_0",
                   [
@@ -71,9 +81,31 @@ class HsmTest extends TestCase{
                   ]
                 ),
                 one("0_0_1_1",
+                  Call.lift(
+                    Arrowlet.Sync(
+                      (x) -> {
+                        __.log()('called');
+                        return x;
+                      }
+                    ).then(
+                      Arrowlet.Delay(200).then(
+                        Arrowlet.Sync(
+                          (ctx:Context<Any,Any>) -> {
+                            __.log()("here");
+                            return __.accept(ctx.global);
+                          }
+                        )
+                      )
+                    )
+                  ),
                   [
                     all("0_0_1_1_0"),
-                    all("0_0_1_1_1")
+                    all("0_0_1_1_1",
+                      (ctx) -> {
+                        __.log()("FINISHED");
+                        async.done();
+                      }
+                    )
                   ]
                 )
               ]
@@ -88,33 +120,27 @@ class HsmTest extends TestCase{
         )
       ]
     );
-    trace(spec);
+    //__.log()(spec);
     var tree = spec.toTree();
-    trace(tree);
+    __.log()(tree);
 
     /*
-    trace(tree.toString());
+    __.log()(tree.toString());
     var next = tree.path(["0_0","0_0_1"]);
-    trace(next.value().map(x -> x.toString()));
+    __.log()(next.value().map(x -> x.toString()));
 
     var next = tree.path(["0_0","0_0_0"]);
-    trace(next.value().map(x -> x.toString()));
+    __.log()(next.value().map(x -> x.toString()));
     */
-    var p : Path   =  ["0_0","0_0_1","0_0_1_1","0_0_1_1_1"];
-    //var path =  tree.path(p);
-    
-    var transition = Tree.divergence(tree,p);
-    trace(transition);
-    
-    for(t in transition.value()){
-      var bfo = t.from.bf().array().reversed();
-      for(v in bfo){
-        trace(v);
-      }
-      var bfi = t.into.bf();
-      for(v in bfi){
-        trace(v);
-      }
-    }
+    var p : Path    =  ["0_0","0_0_1","0_0_1_1","0_0_1_1_1"];
+    var machine     = new Machine(tree).on("test",p);
+    var transition  = machine.call(p);
+        machine.activator().reply().seq(transition).environment(
+          Context.make({ a : 1}, { b : true }),
+          (x) -> __.log()(x),
+          __.crack
+        ).submit();
+    //var next = transition.value().fudge().next();
+    //__.log()(next.tree); 
   }
-} 
+}

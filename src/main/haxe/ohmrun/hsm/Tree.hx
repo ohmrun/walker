@@ -1,65 +1,66 @@
 package ohmrun.hsm;
 
-typedef TreeDef<T> = KaryTree<Node<T>>;
-@:forward abstract Tree<T>(TreeDef<T>) from TreeDef<T> to TreeDef<T>{
+typedef TreeDef<T,G> = KaryTree<Node<T,G>>;
+@:using(ohmrun.hsm.Tree.TreeLift)
+@:forward abstract Tree<T,G>(TreeDef<T,G>) from TreeDef<T,G> to TreeDef<T,G>{
   static public inline function dbg(){
     return __.log().tag("ohmrun.hsm").level(TRACE);
   }
   static public inline function log_path(){
     return dbg().tag('ohmrun.hsm.Tree.path');
   }
-  @:noUsing inline static public function unit<T>():Tree<T>               return lift(Nought);
-  @:noUsing inline static public function pure<T>(v:Node<T>):Tree<T>      return lift(Branch(v,Nil));
-  @:noUsing inline static public function make<T>(v:Node<T>,rest:LinkedList<Tree<T>>):Tree<T> return lift(Branch(v,rest));
-  @:noUsing static public function lift<T>(self:TreeDef<T>){
+  @:noUsing inline static public function unit<T,G>():Tree<T,G>               return lift(Nought);
+  @:noUsing inline static public function pure<T,G>(v:Node<T,G>):Tree<T,G>      return lift(Branch(v,Nil));
+  @:noUsing inline static public function make<T,G>(v:Node<T,G>,rest:LinkedList<Tree<T,G>>):Tree<T,G> return lift(Branch(v,rest));
+  @:noUsing static public function lift<T,G>(self:TreeDef<T,G>){
     return new Tree(self);
   }
   public function new(self) this = self;
 
-  public function active():Tree<T>{
+  public function active():Tree<T,G>{
     return switch(__.option(this.value()).map(_ -> _.type)){
       case Some(All) : 
         lift(Branch(
           this.value(),
           this.children().map(
-            (x:KaryTree<Node<T>>) -> (x:Tree<T>).active()
+            (x:KaryTree<Node<T,G>>) -> (x:Tree<T,G>).active()
           )
         ));
       case Some(One) : 
         lift(Branch(
           this.value(),
-          __.option(this.children().head()).map(x -> (x:Tree<T>).active()).map(LinkedList.pure).defv(null)
+          __.option(this.children().head()).map(x -> (x:Tree<T,G>).active()).map(LinkedList.pure).defv(null)
         ));
       case None   :
         lift(Nought);
     }
   }
-  public function get(id:Id):Option<Tree<T>>{
+  public function get(id:Id):Option<Tree<T,G>>{
     return this.children().search(
-      (tree:Tree<T>) -> tree.value().map(
+      (tree:Tree<T,G>) -> tree.value().map(
         node -> node.id.has_name_like(id)
       ).defv(false)
     );
   }
-  public function path(path:Path,?depth=0):Tree<T>{
+  public function path(path:Path,?depth=0):Tree<T,G>{
     __.log()('path $path on ${this.value()}');
     return switch([__.option(this.value()),path.head()]){
       case [Some(node),Some(head)] if (node.type == One) : 
         make(
           node,
           this.search_child(
-            (node:Node<T>) -> node.id.has_name_like(head)
+            (node:Node<T,G>) -> node.id.has_name_like(head)
           ).or(
             //TODO what's the fail condition?
             () -> __.option(this.children().head())//whatever the default path was 
-          ).map((child:Tree<T>) -> child.path(path.tail()))
+          ).map((child:Tree<T,G>) -> child.path(path.tail()))
           .map(LinkedList.pure)
           .def(LinkedList.unit)
         );
       case [Some(node),None] if (node.type == One) : 
         make(node,
           __.option(this.children().head())
-            .map((tree:Tree<T>) -> tree.path(path.tail()))
+            .map((tree:Tree<T,G>) -> tree.path(path.tail()))
             .map(LinkedList.pure)
             .def(LinkedList.unit)
         );
@@ -67,7 +68,7 @@ typedef TreeDef<T> = KaryTree<Node<T>>;
         make(
           node,
           this.children().map(
-            (tree:Tree<T>) -> {
+            (tree:Tree<T,G>) -> {
               return tree.path(path.tail());
             }
           )
@@ -77,7 +78,7 @@ typedef TreeDef<T> = KaryTree<Node<T>>;
           node,
           this.children()
             .lfold(
-              (next:Tree<T>,memo:LinkedList<KaryTree<Node<T>>>) -> {
+              (next:Tree<T,G>,memo:LinkedList<KaryTree<Node<T,G>>>) -> {
                 return next.value().map(
                   node -> node.id.has_name_like(head)
                 ).defv(false)
@@ -88,7 +89,7 @@ typedef TreeDef<T> = KaryTree<Node<T>>;
               }
               ,LinkedList.unit()
             ).map(
-              (tree:Tree<T>) -> {
+              (tree:Tree<T,G>) -> {
                 return tree.path(path.tail());
               }
             )
@@ -96,40 +97,48 @@ typedef TreeDef<T> = KaryTree<Node<T>>;
       default : unit();
     }
   }
-  public function value():Option<Node<T>>{
+  public function value():Option<Node<T,G>>{
     return __.option(this.value());
   }
-  public function has_head_value_equals(that:Tree<T>){
-    return value().zip(that.value()).map(__.decouple((l:Node<T>,r:Node<T>) -> l.equals(r)));
+  public function has_head_value_equals(that:Tree<T,G>){
+    return value().zip(that.value()).map(__.decouple((l:Node<T,G>,r:Node<T,G>) -> l.equals(r)));
   }
-  static public function divergence<T>(tree:Tree<T>,path:Path):Res<TransitionData<T>,HsmFailure>{
+  public function toString():String{
+    return KaryTree._.toString(this);
+  }
+}
+class TreeLift{
+  /**
+    Produces the Tree representing the downward activation path.
+  **/
+  static public function divergence<T,G>(tree:Tree<T,G>,path:Path):Res<TransitionData<T,G>,HsmFailure>{
     var active  = tree.active();
     var next    = tree.path(path);
     
-    function are_same(lhs:Tree<T>,rhs:Tree<T>){
+    function are_same(lhs:Tree<T,G>,rhs:Tree<T,G>){
       return lhs.value().zip(rhs.value())
         .map(
           __.decouple(
-            (l:Node<T>,r:Node<T>) -> l.id.has_name_like(r.id)
+            (l:Node<T,G>,r:Node<T,G>) -> l.id.has_name_like(r.id)
           )
         ).defv(true);
     }
-    function have_same_size(l:Tree<T>,r:Tree<T>){
+    function have_same_size(l:Tree<T,G>,r:Tree<T,G>){
       return l.children().size() == r.children().size();
     }
-    function have_same_children(l:Tree<T>,r:Tree<T>){
+    function have_same_children(l:Tree<T,G>,r:Tree<T,G>){
       return l.children().zip(r.children()).toArray().all(
-        (next:Twin<Tree<T>>) -> next.decouple(are_same)
+        (next:Twin<Tree<T,G>>) -> next.decouple(are_same)
       );
     }
-    function rec(lhs:Tree<T>,rhs:Tree<T>):Res<Option<Twin<Tree<T>>>,HsmFailure>{
+    function rec(lhs:Tree<T,G>,rhs:Tree<T,G>):Res<Option<Twin<Tree<T,G>>>,HsmFailure>{
       return are_same(lhs,rhs).if_else(
         () -> have_same_size(lhs,rhs).if_else(
           () -> {
             return have_same_children(lhs,rhs).if_else(
               () -> lhs.children().zip(rhs.children()).lfold(
-                (next:Twin<Tree<T>>,memo:Res<Option<Twin<Tree<T>>>,HsmFailure>) -> memo.flat_map(
-                  (opt:Option<Twin<Tree<T>>>) -> opt.fold(
+                (next:Twin<Tree<T,G>>,memo:Res<Option<Twin<Tree<T,G>>>,HsmFailure>) -> memo.flat_map(
+                  (opt:Option<Twin<Tree<T,G>>>) -> opt.fold(
                     (v) -> __.accept(Some(v)),
                     ()  -> next.decouple(rec)  
                   )
@@ -146,27 +155,27 @@ typedef TreeDef<T> = KaryTree<Node<T>>;
     }
     var out =  rec(active,next);
     return out.flat_map(
-      (opt:Option<Twin<Tree<T>>>) -> opt.map(
-        (couple:Twin<Tree<T>>) -> TransitionData.make(tree,path,couple.fst(),couple.snd())
+      (opt:Option<Twin<Tree<T,G>>>) -> opt.map(
+        (couple:Twin<Tree<T,G>>) -> TransitionData.make(tree,path,couple.fst(),couple.snd())
       ).resolve(
         E_Hsm_CannotFindName(path,null)
       )
     );
   }
-  public function toString():String{
-    return KaryTree._.toString(this);
-  }
-}
-@:forward abstract BranchSet<T>(RedBlackSet<Node<T>>) from RedBlackSet<Node<T>> to RedBlackSet<Node<T>>{
-  static public function unit(){
-    return new BranchSet();
-  }
-  public function new(){
-    this = RedBlackSet.make(
-      Comparable.Anon(
-        ohmrun.hsm.Node._.eq(),
-        ohmrun.hsm.Node._.ord()
-      )
-    );
+  /**
+    Produces a Path for the natural transition, selecting the first child of each branch
+  **/
+  static public function fetch_default_path<T,G>(self:Tree<T,G>){
+    function rec(tree:Tree<T,G>,path:Path):Path {
+      var head = __.option(tree.children().head());
+      var id   = head.flat_map(_ -> _.value());
+      for(v in id){
+        path = path.snoc(v.id);
+      }
+      return head.map(
+        t -> rec(t,path)
+      ).defv(path);
+    }
+    return rec(self,Path.unit());
   }
 }
