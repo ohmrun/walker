@@ -1,6 +1,6 @@
-package ohmrun.hsm;
+package eu.ohmrun.hsm;
 
-@:using(ohmrun.hsm.HsmFailure.HsmFailureLift)
+@:using(eu.ohmrun.hsm.HsmFailure.HsmFailureLift)
 enum HsmFailure{
   E_Hsm_CannotFindName(path:Array<Id>,id:Id);
   E_Hsm_AreDifferentNodes;

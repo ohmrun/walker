@@ -1,16 +1,16 @@
-package ohmrun.hsm;
+package eu.ohmrun.hsm;
 
 using Lambda;
 
-import ohmrun.hsm.Spec;
-import ohmrun.Hsm.*;
+import eu.ohmrun.hsm.Spec;
+import eu.ohmrun.Hsm.*;
 
 
-using ohmrun.hsm.Test;
+using eu.ohmrun.hsm.Test;
 
 class Test{
   static public function log(wildcard:Wildcard):Log{
-    return new stx.Log().tag("ohmrun.hsm.test");
+    return new stx.Log().tag("eu.ohmrun.hsm.test");
   }
   static public function main(){
     utest.UTest.run([

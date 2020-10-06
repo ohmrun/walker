@@ -1,4 +1,4 @@
-package ohmrun;
+package eu.ohmrun;
 
 using Lambda;
 import haxe.ds.StringMap;
@@ -16,4 +16,4 @@ using stx.Async;
 using stx.Arw;
 using stx.coroutine.Pack;
 
-using ohmrun.Hsm;
+using eu.ohmrun.Hsm;

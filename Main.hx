@@ -1,10 +1,10 @@
-using ohmrun.Hsm;
+using eu.ohmrun.Hsm;
 
 class Main {
 	static function main() {
 		var log_facade = stx.log.Facade.unit();
-				//log_facade.includes.push("ohmrun.hsm");
-				log_facade.includes.push("ohmrun.hsm.test");
+				//log_facade.includes.push("eu.ohmrun.hsm");
+				log_facade.includes.push("eu.ohmrun.hsm.test");
 				//log_facade.includes.push("stx.async");
 				//log_facade.format = [INCLUDE_LOCATION,INCLUDE_DETAIL];
 				log_facade.logic	= 
@@ -15,6 +15,6 @@ class Main {
 							//_.tag('x')		
 					);
 					
-		ohmrun.hsm.Test.main();
+		eu.ohmrun.hsm.Test.main();
 	}
 }

@@ -1,13 +1,13 @@
-package ohmrun.hsm;
+package eu.ohmrun.hsm;
 
 typedef TreeDef<T,G> = KaryTree<Node<T,G>>;
-@:using(ohmrun.hsm.Tree.TreeLift)
+@:using(eu.ohmrun.hsm.Tree.TreeLift)
 @:forward abstract Tree<T,G>(TreeDef<T,G>) from TreeDef<T,G> to TreeDef<T,G>{
   static public inline function dbg(){
-    return __.log().tag("ohmrun.hsm").level(TRACE);
+    return __.log().tag("eu.ohmrun.hsm").level(TRACE);
   }
   static public inline function log_path(){
-    return dbg().tag('ohmrun.hsm.Tree.path');
+    return dbg().tag('eu.ohmrun.hsm.Tree.path');
   }
   @:noUsing inline static public function unit<T,G>():Tree<T,G>               return lift(Nought);
   @:noUsing inline static public function pure<T,G>(v:Node<T,G>):Tree<T,G>      return lift(Branch(v,Nil));

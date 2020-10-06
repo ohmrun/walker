@@ -1,4 +1,4 @@
-package ohmrun.hsm;
+package eu.ohmrun.hsm;
 
 abstract Path(Array<Id>) from Array<Id> to Array<Id>{
   @:noUsing static public function lift(self:Array<Id>):Path{

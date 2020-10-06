@@ -1,4 +1,4 @@
-package ohmrun.hsm;
+package eu.ohmrun.hsm;
 
 class Machine<T,G>{
   public var tree(default,null):Tree<T,G>;

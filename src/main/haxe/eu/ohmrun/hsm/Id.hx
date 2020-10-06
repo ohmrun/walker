@@ -1,7 +1,7 @@
-package ohmrun.hsm;
+package eu.ohmrun.hsm;
 
 typedef IdDef = Couple<String,Option<String>>;
-@:using(ohmrun.hsm.Id.IdLift)
+@:using(eu.ohmrun.hsm.Id.IdLift)
 abstract Id(IdDef){
   static public var _(default,never) = IdLift;
   public function new(self) this = self;

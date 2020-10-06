@@ -1,10 +1,10 @@
-package ohmrun.hsm;
+package eu.ohmrun.hsm;
 
 typedef CallApi<T,G> = ArrowletApi<Context<T,G>,Res<G,HsmFailure>,Noise>;
 typedef CallDef<T,G> = ArrowletDef<Context<T,G>,Res<G,HsmFailure>,Noise>;
 
 @:using(stx.arw.Attempt.AttemptLift)
-@:using(ohmrun.hsm.Call.CallLift)
+@:using(eu.ohmrun.hsm.Call.CallLift)
 @:forward abstract Call<T,G>(CallDef<T,G>) from CallDef<T,G> to CallDef<T,G>{
   public function new(self:CallDef<T,G>) this = self;
   @:noUsing static public function lift<T,G>(self:CallDef<T,G>):Call<T,G>{

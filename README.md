@@ -33,7 +33,7 @@ import ohmrun.Hsm.*;//constructors root(), all() and one() pulled into the globa
 
   var tree         = spec.toTree();
   var machine0     = new Machine(tree);
-  var init         = machine0.activator();
+  var init         = machine0.activator();//The Call that activates all default States.
 
   //Res.value -> Option
   //Option.fudge -> Null<Transition>

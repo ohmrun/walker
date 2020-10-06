@@ -1,4 +1,4 @@
-package ohmrun.hsm;
+package eu.ohmrun.hsm;
 
 class TransitionData<T,G>{
   static public function make<T,G>(self:Tree<T,G>,path:Path,from:Tree<T,G>,into:Tree<T,G>){

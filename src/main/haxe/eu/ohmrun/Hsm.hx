@@ -1,8 +1,8 @@
-package ohmrun;
+package eu.ohmrun;
 
 class Hsm{
   static public function log(wildcard:Wildcard):Log{
-    return new stx.Log().tag("ohmrun.hsm");
+    return new stx.Log().tag("eu.ohmrun.hsm");
   }
   static public function id(wildcard:Wildcard,name:String,?uuid:String):Id{
     return Id.make(name,__.option(uuid));
@@ -27,30 +27,30 @@ class Hsm{
     }
   }
 }
-typedef HsmFailure                    = ohmrun.hsm.HsmFailure;
-typedef Spec                          = ohmrun.hsm.Spec;
-typedef NodeSpec<T,G>                 = ohmrun.hsm.Spec.NodeSpec<T,G>;
-typedef ChildrenSpec<T,G>             = ohmrun.hsm.Spec.ChildrenSpec<T,G>;
+typedef HsmFailure                    = eu.ohmrun.hsm.HsmFailure;
+typedef Spec                          = eu.ohmrun.hsm.Spec;
+typedef NodeSpec<T,G>                 = eu.ohmrun.hsm.Spec.NodeSpec<T,G>;
+typedef ChildrenSpec<T,G>             = eu.ohmrun.hsm.Spec.ChildrenSpec<T,G>;
 
-typedef IdDef                         = ohmrun.hsm.Id.IdDef;
-typedef Id                            = ohmrun.hsm.Id;
+typedef IdDef                         = eu.ohmrun.hsm.Id.IdDef;
+typedef Id                            = eu.ohmrun.hsm.Id;
 
-typedef NodeCls<T,G>                  = ohmrun.hsm.Node.NodeCls<T,G>;
-typedef Node<T,G>                     = ohmrun.hsm.Node<T,G>;
+typedef NodeCls<T,G>                  = eu.ohmrun.hsm.Node.NodeCls<T,G>;
+typedef Node<T,G>                     = eu.ohmrun.hsm.Node<T,G>;
 
-typedef TransitionData<T,G>           = ohmrun.hsm.TransitionData<T,G>;
+typedef TransitionData<T,G>           = eu.ohmrun.hsm.TransitionData<T,G>;
 
-typedef PhaseSum                      = ohmrun.hsm.Phase.PhaseSum;
-typedef Phase                         = ohmrun.hsm.Phase;
+typedef PhaseSum                      = eu.ohmrun.hsm.Phase.PhaseSum;
+typedef Phase                         = eu.ohmrun.hsm.Phase;
 
-typedef Machine<T,G>                  = ohmrun.hsm.Machine<T,G>;
+typedef Machine<T,G>                  = eu.ohmrun.hsm.Machine<T,G>;
 
-typedef CallApi<T,G>                  = ohmrun.hsm.Call.CallApi<T,G>;
-typedef CallDef<T,G>                  = ohmrun.hsm.Call.CallDef<T,G>;
-typedef Call<T,G>                     = ohmrun.hsm.Call<T,G>;
+typedef CallApi<T,G>                  = eu.ohmrun.hsm.Call.CallApi<T,G>;
+typedef CallDef<T,G>                  = eu.ohmrun.hsm.Call.CallDef<T,G>;
+typedef Call<T,G>                     = eu.ohmrun.hsm.Call<T,G>;
 
-typedef Selector                      = ohmrun.hsm.Selector;
-typedef Transition<T,G>               = ohmrun.hsm.Transition<T,G>;
+typedef Selector                      = eu.ohmrun.hsm.Selector;
+typedef Transition<T,G>               = eu.ohmrun.hsm.Transition<T,G>;
 
 enum Selectable{
   One;

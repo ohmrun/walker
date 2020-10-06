@@ -1,4 +1,4 @@
-package ohmrun.hsm;
+package eu.ohmrun.hsm;
 
 //TODO on-transition-finish? on-transition-start?
 class Transition<T,G>{

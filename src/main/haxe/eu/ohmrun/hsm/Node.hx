@@ -1,4 +1,4 @@
-package ohmrun.hsm;
+package eu.ohmrun.hsm;
 
 class NodeCls<T,G>{
   public var id(default,null):Id;
@@ -13,7 +13,7 @@ class NodeCls<T,G>{
 
   public function toString(){ return '$type:$id'; }
 }
-@:using(ohmrun.hsm.Node.NodeLift)
+@:using(eu.ohmrun.hsm.Node.NodeLift)
 @:forward abstract Node<T,G>(NodeCls<T,G>) from NodeCls<T,G> to NodeCls<T,G>{
   static public var _(default,never) = NodeLift;
   public function new(self) this = self;

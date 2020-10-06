@@ -1,4 +1,4 @@
-package ohmrun.hsm;
+package eu.ohmrun.hsm;
 
 enum SelectorSum{
   SelectId(id:String);
