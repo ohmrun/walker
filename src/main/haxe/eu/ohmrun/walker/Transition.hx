@@ -1,4 +1,4 @@
-package eu.ohmrun.hsm;
+package eu.ohmrun.walker;
 
 //TODO on-transition-finish? on-transition-start?
 class Transition<T,G>{
@@ -22,7 +22,7 @@ class Transition<T,G>{
   
   public function reply():Call<T,G>{
     return Call.lift(this.data.fetch_nodes().lfold(
-      (next:Couple<Bool,Node<T,G>>,memo:Attempt<Context<T,G>,G,HsmFailure>) -> {
+      (next:Couple<Bool,Node<T,G>>,memo:Attempt<Context<T,G>,G,WalkerFailure>) -> {
         __.log().debug("here"); 
         return memo
          .broach()

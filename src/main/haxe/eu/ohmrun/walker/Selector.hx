@@ -1,4 +1,4 @@
-package eu.ohmrun.hsm;
+package eu.ohmrun.walker;
 
 enum SelectorSum{
   SelectId(id:String);

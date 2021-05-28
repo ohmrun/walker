@@ -2,8 +2,8 @@
 
 ## Usage
 ```haxe
-using ohmrun.Hsm;//import package;
-import ohmrun.Hsm.*;//constructors root(), all() and one() pulled into the global scope.
+using ohmrun.Walker;//import package;
+import ohmrun.Walker.*;//constructors root(), all() and one() pulled into the global scope.
  class Main{
   static function main(){
   var state = {

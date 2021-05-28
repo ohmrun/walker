@@ -1,0 +1,30 @@
+{
+    "name": "walker",
+    "license": "MIT",
+    "tags": [
+        "cross",
+        "functional",
+        "pointwise"
+    ],
+    "description": "Functional composition tools. Haxe 4 required.",
+    "contributors": [
+        "0b1kn00b"
+    ],
+    "releasenote": "rewrite",
+    "version": "0.1.0",
+    "url": "https://github.com/ohmrun/fletcher",
+    "dependencies": {
+        "tink_core"     : "git:https://github.com/haxetink/tink_core.git",
+
+
+        "stx_pico"      : "git:https://github.com/ohmrun/stx_pico.git",
+        "stx_nano"      : "git:https://github.com/ohmrun/stx_nano.git",
+        "stx_fn"        : "git:https://github.com/ohmrun/stx_fn.git",
+        "stx_fp"        : "git:https://github.com/ohmrun/stx_fp.git",
+        "stx_log"       : "git:https://github.com/ohmrun/stx_log.git",
+        "stx_test"      : "git:https://github.com/ohmrun/stx_test.git",
+
+        "fletcher"      : "git:https://github.com/ohmrun/fletcher.git"
+    },
+    "classPath": "src/main/haxe"
+}

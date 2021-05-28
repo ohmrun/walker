@@ -1,10 +1,10 @@
-using eu.ohmrun.Hsm;
+using eu.ohmrun.Walker;
 
 class Main {
 	static function main() {
 		var log_facade = stx.log.Facade.unit();
-				//log_facade.includes.push("eu.ohmrun.hsm");
-				//log_facade.includes.push("eu.ohmrun.hsm.test");
+				//log_facade.includes.push("eu.ohmrun.walker");
+				//log_facade.includes.push("eu.ohmrun.walker.test");
 				//log_facade.includes.push("stx.async");
 				//log_facade.format = [INCLUDE_LOCATION,INCLUDE_DETAIL];
 				// log_facade.logic	= 
@@ -15,6 +15,6 @@ class Main {
 				// 			//_.tag('x')		
 				// 	);
 					
-		eu.ohmrun.hsm.Test.main();
+		eu.ohmrun.walker.Test.main();
 	}
 }

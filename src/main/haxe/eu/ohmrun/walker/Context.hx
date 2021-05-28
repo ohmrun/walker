@@ -1,4 +1,4 @@
-package eu.ohmrun.hsm;
+package eu.ohmrun.walker;
 
 class Context<T,G>{
 

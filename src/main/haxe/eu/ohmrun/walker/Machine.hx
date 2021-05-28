@@ -1,4 +1,4 @@
-package eu.ohmrun.hsm;
+package eu.ohmrun.walker;
 
 class Machine<T,G>{
   public var tree(default,null):Tree<T,G>;
@@ -17,13 +17,13 @@ class Machine<T,G>{
   public function on(key:String,selector:Selector):Machine<T,G>{
     return copy(null,calls.set(key,selector));
   }
-  public function to(path:Path):Res<Transition<T,G>,HsmFailure>{
+  public function to(path:Path):Res<Transition<T,G>,WalkerFailure>{
     return this.tree.divergence(path).map(x -> new Transition(this,x));
   }
   public function call(path:Path):Call<T,G>{
     return Call.lift(
       Fletcher.Anon(
-        (ipt:Context<T,G>,cont:Terminal<Res<G,HsmFailure>,Noise>) -> to(path).fold(
+        (ipt:Context<T,G>,cont:Terminal<Res<G,WalkerFailure>,Noise>) -> to(path).fold(
           (ok)  -> cont.receive(ok.reply().forward(ipt)),
           (e)   -> cont.value(__.reject(e)).serve()
         )

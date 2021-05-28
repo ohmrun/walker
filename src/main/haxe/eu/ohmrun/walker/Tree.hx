@@ -1,13 +1,13 @@
-package eu.ohmrun.hsm;
+package eu.ohmrun.walker;
 
 typedef TreeDef<T,G> = KaryTree<Node<T,G>>;
-@:using(eu.ohmrun.hsm.Tree.TreeLift)
+@:using(eu.ohmrun.walker.Tree.TreeLift)
 @:forward abstract Tree<T,G>(TreeDef<T,G>) from TreeDef<T,G> to TreeDef<T,G>{
   static public inline function dbg(){
-    return __.log().tag("eu.ohmrun.hsm").level(TRACE);
+    return __.log().tag("eu.ohmrun.walker").level(TRACE);
   }
   static public inline function log_path(){
-    return dbg().tag('eu.ohmrun.hsm.Tree.path');
+    return dbg().tag('eu.ohmrun.walker.Tree.path');
   }
   @:noUsing inline static public function unit<T,G>():Tree<T,G>               return lift(Nought);
   @:noUsing inline static public function pure<T,G>(v:Node<T,G>):Tree<T,G>      return lift(Branch(v,Nil));
@@ -111,7 +111,7 @@ class TreeLift{
   /**
     Produces the Tree representing the downward activation path.
   **/
-  static public function divergence<T,G>(tree:Tree<T,G>,path:Path):Res<TransitionData<T,G>,HsmFailure>{
+  static public function divergence<T,G>(tree:Tree<T,G>,path:Path):Res<TransitionData<T,G>,WalkerFailure>{
     var active  = tree.active();
     var next    = tree.path(path);
     
@@ -131,13 +131,13 @@ class TreeLift{
         (next:Twin<Tree<T,G>>) -> next.decouple(are_same)
       );
     }
-    function rec(lhs:Tree<T,G>,rhs:Tree<T,G>):Res<Option<Twin<Tree<T,G>>>,HsmFailure>{
+    function rec(lhs:Tree<T,G>,rhs:Tree<T,G>):Res<Option<Twin<Tree<T,G>>>,WalkerFailure>{
       return are_same(lhs,rhs).if_else(
         () -> have_same_size(lhs,rhs).if_else(
           () -> {
             return have_same_children(lhs,rhs).if_else(
               () -> lhs.children().zip(rhs.children()).lfold(
-                (next:Twin<Tree<T,G>>,memo:Res<Option<Twin<Tree<T,G>>>,HsmFailure>) -> memo.flat_map(
+                (next:Twin<Tree<T,G>>,memo:Res<Option<Twin<Tree<T,G>>>,WalkerFailure>) -> memo.flat_map(
                   (opt:Option<Twin<Tree<T,G>>>) -> opt.fold(
                     (v) -> __.accept(Some(v)),
                     ()  -> next.decouple(rec)  
@@ -148,9 +148,9 @@ class TreeLift{
               () -> __.accept(Some(__.couple(lhs,rhs)))
             );
           },
-          () -> __.reject(__.fault().of(E_Hsm_AreDifferentNodes))
+          () -> __.reject(__.fault().of(E_Walker_AreDifferentNodes))
         ),
-        () -> __.reject(__.fault().of(E_Hsm_AreDifferentNodes))
+        () -> __.reject(__.fault().of(E_Walker_AreDifferentNodes))
       );
     }
     var out =  rec(active,next);
@@ -158,7 +158,7 @@ class TreeLift{
       (opt:Option<Twin<Tree<T,G>>>) -> opt.map(
         (couple:Twin<Tree<T,G>>) -> TransitionData.make(tree,path,couple.fst(),couple.snd())
       ).resolve(
-        f -> f.of(E_Hsm_CannotFindName(path,null))
+        f -> f.of(E_Walker_CannotFindName(path,null))
       )
     );
   }

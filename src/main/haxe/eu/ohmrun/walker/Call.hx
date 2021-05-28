@@ -1,9 +1,9 @@
-package eu.ohmrun.hsm;
+package eu.ohmrun.walker;
 
-typedef CallDef<T,G> = FletcherDef<Context<T,G>,Res<G,HsmFailure>,Noise>;
+typedef CallDef<T,G> = FletcherDef<Context<T,G>,Res<G,WalkerFailure>,Noise>;
 
 @:using(eu.ohmrun.fletcher.Attempt.AttemptLift)
-@:using(eu.ohmrun.hsm.Call.CallLift)
+@:using(eu.ohmrun.walker.Call.CallLift)
 @:forward abstract Call<T,G>(CallDef<T,G>) from CallDef<T,G> to CallDef<T,G>{
   public function new(self:CallDef<T,G>) this = self;
   @:noUsing static public function lift<T,G>(self:CallDef<T,G>):Call<T,G>{
@@ -29,16 +29,16 @@ typedef CallDef<T,G> = FletcherDef<Context<T,G>,Res<G,HsmFailure>,Noise>;
       )
     );
   }
-  @:to public function toFletcher():Fletcher<Context<T,G>,Res<G,HsmFailure>,Noise>{
+  @:to public function toFletcher():Fletcher<Context<T,G>,Res<G,WalkerFailure>,Noise>{
     return Fletcher.lift(this);
   }
   @:from static public function fromFContextVoid<T,G>(fn:Context<T,G>->Void){
     return lift(Fletcher.Sync(__.passthrough(fn).fn().then(_ -> _.global).then(__.accept)));
   }
-  @:to public function toAttempt():Attempt<Context<T,G>,G,HsmFailure>{
+  @:to public function toAttempt():Attempt<Context<T,G>,G,WalkerFailure>{
     return Attempt.lift(this);
   }
-  public function symmetric():Attempt<Context<T,G>,Context<T,G>,HsmFailure>{
+  public function symmetric():Attempt<Context<T,G>,Context<T,G>,WalkerFailure>{
     return Attempt.lift(
       Attempt.lift(this).broach().convert(
         Fletcher.Sync(
@@ -52,11 +52,11 @@ typedef CallDef<T,G> = FletcherDef<Context<T,G>,Res<G,HsmFailure>,Noise>;
   }
 }
 class CallLift{
-  static public function environment<T,G>(self:Call<T,G>,ctx:Context<T,G>,success:G->Void,?failure:Err<HsmFailure>->Void){
+  static public function environment<T,G>(self:Call<T,G>,ctx:Context<T,G>,success:G->Void,?failure:Err<WalkerFailure>->Void){
     return Fletcher._.environment(
       self,
       ctx,
-      (res:Res<G,HsmFailure>) -> {
+      (res:Res<G,WalkerFailure>) -> {
         trace(res);
         res.fold(success,__.option(failure).defv(__.crack));
       },

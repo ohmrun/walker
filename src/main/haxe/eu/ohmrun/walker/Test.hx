@@ -1,28 +1,28 @@
-package eu.ohmrun.hsm;
+package eu.ohmrun.walker;
 
 using Lambda;
 
 using stx.unit.Test;
 
-import eu.ohmrun.hsm.Spec;
-import eu.ohmrun.Hsm.*;
+import eu.ohmrun.walker.Spec;
+import eu.ohmrun.Walker.*;
 
 
-using eu.ohmrun.hsm.Test;
+using eu.ohmrun.walker.Test;
 
 class Test{
   static public function log(wildcard:Wildcard):Log{
-    return new stx.Log().tag("eu.ohmrun.hsm.test");
+    return new stx.Log().tag("eu.ohmrun.walker.test");
   }
   static public function main(){
     __.unit([
-      new HsmTest()
+      new WalkerTest()
     ],[]);
   }
 }
-class HsmTest extends TestCase{
+class WalkerTest extends TestCase{
   public function _test_build_tree_0(){
-    var node  = Hsm.root();
+    var node  = Walker.root();
     var tree  = new KaryTree();
     var zip   = tree.zipper();
     var tp    = zip.add_child(node);
