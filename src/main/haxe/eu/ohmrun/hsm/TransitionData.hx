@@ -22,6 +22,7 @@ class TransitionData<T,G>{
     var nodes = [];
         nodes = nodes.concat(this.from.bf().array().reversed().map(__.couple.bind(false)));
         nodes = nodes.concat(this.into.df().array().map(__.couple.bind(true)));
+    //trace(nodes);
     return nodes;
   }
   /**

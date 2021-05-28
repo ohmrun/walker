@@ -2,6 +2,8 @@ package eu.ohmrun.hsm;
 
 using Lambda;
 
+using stx.unit.Test;
+
 import eu.ohmrun.hsm.Spec;
 import eu.ohmrun.Hsm.*;
 
@@ -13,12 +15,12 @@ class Test{
     return new stx.Log().tag("eu.ohmrun.hsm.test");
   }
   static public function main(){
-    utest.UTest.run([
+    __.unit([
       new HsmTest()
-    ]);
+    ],[]);
   }
 }
-class HsmTest extends utest.Test{
+class HsmTest extends TestCase{
   public function _test_build_tree_0(){
     var node  = Hsm.root();
     var tree  = new KaryTree();
@@ -40,7 +42,7 @@ class HsmTest extends utest.Test{
     var tree  = tpII.snd().toTree();
   }
   @:timeout(2000)
-  public function _test_declare_node(async:utest.Async){
+  public function _test_declare_node(async:Async){
     var node  = one('0_0_1',
       (phase) -> {},
       []
@@ -82,14 +84,14 @@ class HsmTest extends utest.Test{
                 ),
                 one("0_0_1_1",
                   Call.lift(
-                    Arrowlet.Sync(
+                    Fletcher.Sync(
                       (x) -> {
                         __.log()('called');
                         return x;
                       }
                     ).then(
-                      Arrowlet.Delay(200).then(
-                        Arrowlet.Sync(
+                      Fletcher.Delay(200).then(
+                        Fletcher.Sync(
                           (ctx:Context<Any,Any>) -> {
                             __.log()("here");
                             return __.accept(ctx.global);
@@ -122,7 +124,7 @@ class HsmTest extends utest.Test{
     );
     //__.log()(spec);
     var tree = spec.toTree();
-    __.log()(tree);
+    __.log().debug(_ -> _.pure(tree));
 
     /*
     __.log()(tree.toString());
@@ -143,7 +145,7 @@ class HsmTest extends utest.Test{
     //var next = transition.value().fudge().next();
     //__.log()(next.tree); 
   }
-  function test_simple_two(async:utest.Async){
+  function test_simple_two(async:Async){
     var state = {
  
     }
@@ -170,9 +172,10 @@ class HsmTest extends utest.Test{
     var path1 : Path = ["switch","on","intermittent"];
  
     var tree         = spec.toTree();
+    trace(tree.toString());
     var machine0     = new Machine(tree);
     var init         = machine0.activator();
- 
+
     //Res.value -> Option
     //Option.fudge -> Null<Transition>
 
@@ -184,19 +187,19 @@ class HsmTest extends utest.Test{
     //machine0.call(path1) is not the samee as machine1.call(path1)
     var transition1  = machine1.to(path1).value().fudge();
     
- 
-    //compose the calls
+    // //compose the calls
     var sequence : Call<Dynamic,Dynamic> = init.reply().seq(transition0.reply()).seq(transition1.reply());
-    //provide the environment to the Arrowlet to produce a Thread.
-    var thread = sequence.environment(
+    // //provide the environment to the Fletcher to produce a Thread.
+    var fiber = sequence.environment(
       Context.make("hello",state),
       (x:Dynamic) -> {
+        trace("done");
         async.done();
         //x is the G (Global) Type
       },
       __.crack
     );
-    //submit the thread to the scheduler
-    thread.submit();
+    // //submit the fiber to the scheduler
+    fiber.crunch();
    }
 }

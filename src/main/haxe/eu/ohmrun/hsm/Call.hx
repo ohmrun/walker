@@ -1,9 +1,8 @@
 package eu.ohmrun.hsm;
 
-typedef CallApi<T,G> = ArrowletApi<Context<T,G>,Res<G,HsmFailure>,Noise>;
-typedef CallDef<T,G> = ArrowletDef<Context<T,G>,Res<G,HsmFailure>,Noise>;
+typedef CallDef<T,G> = FletcherDef<Context<T,G>,Res<G,HsmFailure>,Noise>;
 
-@:using(stx.arw.Attempt.AttemptLift)
+@:using(eu.ohmrun.fletcher.Attempt.AttemptLift)
 @:using(eu.ohmrun.hsm.Call.CallLift)
 @:forward abstract Call<T,G>(CallDef<T,G>) from CallDef<T,G> to CallDef<T,G>{
   public function new(self:CallDef<T,G>) this = self;
@@ -12,30 +11,37 @@ typedef CallDef<T,G> = ArrowletDef<Context<T,G>,Res<G,HsmFailure>,Noise>;
   }
   @:noUsing static public function debug<T,G>(id:Id){
     return lift(
-      Arrowlet.Sync(
+      Fletcher.Sync(
         (context:Context<T,G>) -> {
-          __.log()('id: $id@${context.phase}');
+          trace('id: $id@${context.phase}');
           return __.accept(context.global);
         }
       )
     );
   }
   @:noUsing static public function unit<T,G>(){
-    return lift(Arrowlet.Sync((context:Context<T,G>) -> __.accept(context.global)));
+    return lift(
+      Fletcher.Sync(
+        (context:Context<T,G>) -> {
+          //trace('Call.unit');
+          return __.accept(context.global);
+        }
+      )
+    );
   }
-  @:to public function toArrowlet():Arrowlet<Context<T,G>,Res<G,HsmFailure>,Noise>{
-    return Arrowlet.lift(this);
+  @:to public function toFletcher():Fletcher<Context<T,G>,Res<G,HsmFailure>,Noise>{
+    return Fletcher.lift(this);
   }
   @:from static public function fromFContextVoid<T,G>(fn:Context<T,G>->Void){
-    return lift(Arrowlet.Sync(__.passthrough(fn).fn().then(_ -> _.global).then(__.accept)));
+    return lift(Fletcher.Sync(__.passthrough(fn).fn().then(_ -> _.global).then(__.accept)));
   }
   @:to public function toAttempt():Attempt<Context<T,G>,G,HsmFailure>{
-    return this;
+    return Attempt.lift(this);
   }
   public function symmetric():Attempt<Context<T,G>,Context<T,G>,HsmFailure>{
     return Attempt.lift(
-      Attempt.lift(this).broach().process(
-        Arrowlet.Sync(
+      Attempt.lift(this).broach().convert(
+        Fletcher.Sync(
           (couple:Couple<Context<T,G>,G>) -> Context.make(couple.fst().event,couple.snd())
         )
       )
@@ -46,12 +52,13 @@ typedef CallDef<T,G> = ArrowletDef<Context<T,G>,Res<G,HsmFailure>,Noise>;
   }
 }
 class CallLift{
-  static public function environment<T,G>(self:Call<T,G>,ctx:Context<T,G>,success:G->Void,failure:Err<HsmFailure>->Void){
-    return Arrowlet._.environment(
+  static public function environment<T,G>(self:Call<T,G>,ctx:Context<T,G>,success:G->Void,?failure:Err<HsmFailure>->Void){
+    return Fletcher._.environment(
       self,
       ctx,
       (res:Res<G,HsmFailure>) -> {
-        res.fold(success,failure);
+        trace(res);
+        res.fold(success,__.option(failure).defv(__.crack));
       },
       __.crack
     );

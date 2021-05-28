@@ -22,18 +22,20 @@ class Machine<T,G>{
   }
   public function call(path:Path):Call<T,G>{
     return Call.lift(
-      Arrowlet.Anon(
+      Fletcher.Anon(
         (ipt:Context<T,G>,cont:Terminal<Res<G,HsmFailure>,Noise>) -> to(path).fold(
-          (ok)  -> ok.reply().prepare(ipt,cont),
+          (ok)  -> cont.receive(ok.reply().forward(ipt)),
           (e)   -> cont.value(__.reject(e)).serve()
         )
       )
     );
   }
   public function activator():Transition<T,G>{
+    final path = this.tree.fetch_default_path();
+    //trace(path);
     return new Transition(
       this,
-      TransitionData.make(this.tree,this.tree.fetch_default_path(),Tree.unit(),this.tree.active())
+      TransitionData.make(this.tree,path,Tree.unit(),this.tree.active())
     );
   }
 } 

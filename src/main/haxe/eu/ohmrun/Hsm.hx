@@ -45,7 +45,6 @@ typedef Phase                         = eu.ohmrun.hsm.Phase;
 
 typedef Machine<T,G>                  = eu.ohmrun.hsm.Machine<T,G>;
 
-typedef CallApi<T,G>                  = eu.ohmrun.hsm.Call.CallApi<T,G>;
 typedef CallDef<T,G>                  = eu.ohmrun.hsm.Call.CallDef<T,G>;
 typedef Call<T,G>                     = eu.ohmrun.hsm.Call<T,G>;
 

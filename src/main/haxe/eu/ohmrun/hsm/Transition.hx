@@ -19,18 +19,21 @@ class Transition<T,G>{
   /**
     Produces a Call that runs through the individual calls on the activation path in `data`.
   **/
+  
   public function reply():Call<T,G>{
     return Call.lift(this.data.fetch_nodes().lfold(
-      (next:Couple<Bool,Node<T,G>>,memo:Attempt<Context<T,G>,G,HsmFailure>) -> 
-        memo.broach().process(
-          Process.fromFun1R(
-            (tp:Couple<Context<T,G>,G>) -> {
-              var ctx = Context.make(tp.fst().event,tp.snd(),next.fst() ? Enter : Leave);
-              return ctx;
-            }
-          )
-        ).attempt(next.snd().call.toAttempt())
-      ,
+      (next:Couple<Bool,Node<T,G>>,memo:Attempt<Context<T,G>,G,HsmFailure>) -> {
+        __.log().debug("here"); 
+        return memo
+         .broach()
+         .map(
+          (tp:Couple<Context<T,G>,G>) -> {
+            __.log().debug(_ -> _.show(tp));
+            var ctx = Context.make(tp.fst().event,tp.snd(),next.fst() ? Enter : Leave);
+            return ctx;
+          }
+        ).attempt(next.snd().call.toAttempt());
+      },
       Call.unit().toAttempt()
     ));
   }

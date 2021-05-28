@@ -49,7 +49,7 @@ import ohmrun.Hsm.*;//constructors root(), all() and one() pulled into the globa
 
   //compose the calls
   var sequence : Call<Dynamic,Dynamic> = init.reply().seq(transition0.reply()).seq(transition1.reply());
-  //provide the environment to the Arrowlet to produce a Thread.
+  //provide the environment to the Arrowlet to produce a Fiber.
   var thread = sequence.environment(
     Context.make("hello",state),
     (x:Dynamic) -> {

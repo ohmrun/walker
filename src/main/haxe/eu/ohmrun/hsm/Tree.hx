@@ -158,7 +158,7 @@ class TreeLift{
       (opt:Option<Twin<Tree<T,G>>>) -> opt.map(
         (couple:Twin<Tree<T,G>>) -> TransitionData.make(tree,path,couple.fst(),couple.snd())
       ).resolve(
-        E_Hsm_CannotFindName(path,null)
+        f -> f.of(E_Hsm_CannotFindName(path,null))
       )
     );
   }
