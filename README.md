@@ -64,12 +64,10 @@ import ohmrun.Walker.*;//constructors root(), all() and one() pulled into the gl
  }
   ```
 ### Development
-  It look to me like event mapping is a seperate concern, and I'll be working on that next.
-  Something like `activator().reply().seq(reactor)` where `reactor` is under cogitation
 
 ### Context
   The `Context` available to a `Call` contains two generic parameters.
-  `T` is the type of the event triggered, to deliver a payload of data to each Node. It's not recommended to edit this on the light path, and the type of `Call` reflects this
+  `T` is the type of the message sent, to deliver a payload of data to each Node. It's not recommended to edit this on the light path, and the type of `Call` reflects this
   `G` is the program state we're working with. It's not strictly enforced as immutable, but if you need history or replecatability use something like Deep State so you can compare your before and after states, or store them: etc.
 ### Call
   `Call` is an `Attempt` (see stx.Arw) taking a `Context` and returning a `Res` of the global (`G`) state as it passes through the `Call`s on the `Node`s.
