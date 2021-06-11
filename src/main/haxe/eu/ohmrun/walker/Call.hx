@@ -50,9 +50,9 @@ typedef CallDef<T,G,K> = FletcherDef<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFailur
       Attempt.lift(this).broach().convert(
         Fletcher.Sync(
           (couple:Couple<Context<T,G,K>,Plan<T,G,K>>) -> {
-            var ctx       = couple.fst();
-            var requests  = ctx.requests.concat(couple.snd().requests);
-            return ctx.copy(null,null,null,null,null,requests);
+            var ctx           = couple.fst();
+            var requisitions  = ctx.requisitions.concat(couple.snd().requisitions);
+            return ctx.copy(null,null,null,null,null,requisitions);
           }
         )
       )

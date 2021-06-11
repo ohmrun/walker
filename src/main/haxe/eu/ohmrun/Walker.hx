@@ -42,6 +42,8 @@ abstract class Walker<T,G,K,E>{
   }
   static public var _(default,never) = WalkerLift;
   private var state       : G;
+  private var tick        : TimeStamp;
+
   private final history   : Array<TransitionData<T,G,K>>;
   private final triggers  : Map<K,Selector>;
   private final machine   : Machine<T,G,K>;
@@ -49,6 +51,7 @@ abstract class Walker<T,G,K,E>{
 
   public function new(state,history,triggers,machine){
     this.state      = state;
+    this.tick       = LogicalClock.get();
     this.history    = history;
     this.triggers   = triggers;
     this.machine    = machine;
@@ -56,10 +59,10 @@ abstract class Walker<T,G,K,E>{
   }
   public function enact(){
     var init         = machine.activator();
-    var requests     = [];
+    var events       = [];
     var canceller    = Hook.signal.handle(
       (stamp) -> {
-        requests.push(stamp);
+        events.push(stamp);
       }
     );
     function enter(){
@@ -68,8 +71,10 @@ abstract class Walker<T,G,K,E>{
     init.reply().environment(
       Context.make(Message.unit(),this.state,Enter,null,null),
       (plan:Plan<T,G,K>) -> {
-        this.state = plan.global;
-        //for(i in plan.)
+        this.state  = plan.global;
+        for(requisition in plan.requisitions){
+          raise(requisition);
+        }
         enter();
       },
       __.crack  

@@ -2,11 +2,11 @@ package eu.ohmrun.walker;
 
 
 class PlanCls<T,G,K>{
-  public final global     : G;
-  public final requests   : Array<Request<T,K>>;
-  public function new(global,requests){
-    this.global   = global;
-    this.requests = requests;
+  public final global         : G;
+  public final requisitions   : Array<Requisition<T,K>>;
+  public function new(global,requisitions){
+    this.global       = global;
+    this.requisitions = requisitions;
   }
 }
 @:forward abstract Plan<T,G,K>(PlanCls<T,G,K>) from PlanCls<T,G,K> to PlanCls<T,G,K>{
@@ -16,8 +16,8 @@ class PlanCls<T,G,K>{
   static public function pure<T,G,K>(global:G):Plan<T,G,K>{
     return fromG(global);
   }
-  static public function make<T,G,K>(global:G,requests:Array<Request<T,K>>){
-    return lift(new PlanCls(global,requests));
+  static public function make<T,G,K>(global:G,requisitions:Array<Requisition<T,K>>){
+    return lift(new PlanCls(global,requisitions));
   }
   @:from static public function fromG<T,G,K>(self:G){
     return lift(new PlanCls(self,[]));
