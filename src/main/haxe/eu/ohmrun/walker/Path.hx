@@ -21,4 +21,7 @@ abstract Path(Array<Id>) from Array<Id> to Array<Id>{
   public function snoc(v:Id):Path{
     return this.snoc(v);
   }
+  public function toStringArray():Array<String>{
+    return this.map(x -> x.name);
+  }
 }

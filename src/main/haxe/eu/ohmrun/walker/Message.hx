@@ -1,9 +1,9 @@
 package eu.ohmrun.walker;
 
 class Message<T,K>{
-  final name            : Spur<K>;
-  final data            : Option<T>;
-  private var lapsed    : Bool;
+  public final name             : Spur<K>;
+  public final data             : Option<T>;
+  private var lapsed            : Bool;
   
   public function new(name:Spur<K>,data:Option<T>){
     this.name   = name;

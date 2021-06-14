@@ -1,20 +1,33 @@
 package eu.ohmrun.walker;
 
-typedef StampDef = {
+typedef StampDef<T> = {
   final timestamp : TimeStamp;
-  final payload   : Block;
+  final payload   : T;
 }
-@:forward abstract Stamp(StampDef) from StampDef to StampDef{
+@:forward abstract Stamp<T>(StampDef<T>) from StampDef<T> to StampDef<T>{
   public function new(self) this = self;
-  static public function lift(self:StampDef):Stamp return new Stamp(self);
+  static public function lift<T>(self:StampDef<T>):Stamp<T> return new Stamp(self);
 
-  @:from static public function fromBlock(self:Void->Void){
+  @:from static public function fromBlock(self:Void->Void):Stamp<Block>{
     return lift({
       timestamp : LogicalClock.get(),
       payload   : self
     });
   }
-  public function prj():StampDef return this;
-  private var self(get,never):Stamp;
-  private function get_self():Stamp return lift(this);
+  @:noUsing static public function make<T>(timestamp,payload:T){
+    return lift({
+      timestamp : timestamp,
+      payload   : payload
+    });
+  }
+  @:noUsing static public function pure<T>(self:T){
+    return make(LogicalClock.get(),self);
+  }
+  public function map<Ti>(fn:T->Ti):Stamp<Ti>{
+    return make(this.timestamp,fn(this.payload));
+  }
+  //public function is_after(stamp:Timestamp)
+  public function prj():StampDef<T> return this;
+  private var self(get,never):Stamp<T>;
+  private function get_self():Stamp<T> return lift(this);
 }

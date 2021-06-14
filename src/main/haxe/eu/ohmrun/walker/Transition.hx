@@ -37,7 +37,7 @@ class Transition<T,G,K>{
               next.fst() ? Enter : Leave,
               origin,
               next.snd().id,
-              tp.fst().requisitions.concat(tp.snd().requisitions)
+              tp.fst().buffer.concat(tp.snd().buffer)
             );
             return ctx;
           }

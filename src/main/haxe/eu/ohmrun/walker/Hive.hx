@@ -10,4 +10,9 @@ class Hive<T,K>{
     final stamp = Stamp.fromBlock(block);
     Hook.raise(stamp);
   }
+  public function unwrap(stamp:Stamp<Block>):Stamp<Option<Event<T,K>>>{
+    return stamp.map(
+    blk -> embed.unpack(blk)
+    );
+  }
 }

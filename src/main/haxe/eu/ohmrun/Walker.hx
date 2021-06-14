@@ -33,7 +33,7 @@ class WalkerLift{
   K Message
   E Error type
 **/
-abstract class Walker<T,G,K,E>{
+class Walker<T,G,K,E>{
   static public function one<T,G,K>(id:Id,?call:Call<T,G,K>,?rest:ChildrenSpec<T,G,K>):NodeSpec<T,G,K>{
     return _.one(id,call,rest);
   }
@@ -42,46 +42,53 @@ abstract class Walker<T,G,K,E>{
   }
   static public var _(default,never) = WalkerLift;
   private var state       : G;
-  private var tick        : TimeStamp;
-
   private final history   : Array<TransitionData<T,G,K>>;
   private final triggers  : Map<K,Selector>;
   private final machine   : Machine<T,G,K>;
+  private final buffer    : Buffer<T,K>;
+  private var tick        : TimeStamp;
   private final hive      : Hive<T,K>;
-
-  public function new(state,history,triggers,machine){
+  
+  public function new(state,history,triggers,machine,buffer,?tick,?hive){
     this.state      = state;
-    this.tick       = LogicalClock.get();
     this.history    = history;
     this.triggers   = triggers;
     this.machine    = machine;
-    this.hive       = new Hive();
+    this.buffer     = buffer;
+    this.tick       = __.option(tick).def(LogicalClock.get);
+    this.hive       = __.option(hive).def( () -> new Hive());
   }
-  public function enact(){
-    var init         = machine.activator();
-    var events       = [];
-    var canceller    = Hook.signal.handle(
-      (stamp) -> {
-        events.push(stamp);
-      }
+  public function copy(state,history,triggers,machine,buffer,tick,hive){
+    return new Walker(
+      __.option(state).defv(this.state),
+      __.option(history).defv(this.history),
+      __.option(triggers).defv(this.triggers),
+      __.option(machine).defv(this.machine),
+      __.option(buffer).defv(this.buffer),
+      __.option(tick).defv(this.tick),
+      __.option(hive).defv(this.hive)
     );
-    function enter(){
-
-    }
-    init.reply().environment(
-      Context.make(Message.unit(),this.state,Enter,null,null),
-      (plan:Plan<T,G,K>) -> {
-        this.state  = plan.global;
-        for(requisition in plan.requisitions){
-          raise(requisition);
-        }
-        enter();
-      },
-      __.crack  
-    ).submit();
   }
-  public function raise(event:Event<T,K>){
-    hive.raise(event);
+  // public function raise(event:Event<T,K>):Walking<T,G,K,E>{
+  //   return stx.coroutine.core.Held.Guard(
+  //     Future.irreversible(
+  //       (cb) -> {
+  //         var events = this.triggers.toIter().search(
+  //           kv -> event.message.flat_map(
+  //             message -> message.name.fold(
+  //               message.name.fold(
+  //                 ()      -> this.machine.activator(),
+  //                 (name)  -> this.triggers.get(name) 
+  //               )
+  //             ) 
+  //           )
+  //         );
+  //       }
+  //     )
+  //   );
+  // }
+  public function reply(){
+
   }
 }
 typedef WalkerFailure                 = eu.ohmrun.walker.WalkerFailure;
@@ -112,16 +119,23 @@ typedef Plan<T,G,K>                   = eu.ohmrun.walker.Plan<T,G,K>;
 typedef PlanCls<T,G,K>                = eu.ohmrun.walker.Plan.PlanCls<T,G,K>;
 
 typedef Hook                          = eu.ohmrun.walker.Hook;
+typedef EventSum<T,K>                 = eu.ohmrun.walker.Event.EventSum<T,K>;
 typedef Event<T,K>                    = eu.ohmrun.walker.Event<T,K>;
-typedef Stamp                         = eu.ohmrun.walker.Stamp;
-typedef StampDef                      = eu.ohmrun.walker.Stamp.StampDef;
+typedef Stamp<T>                      = eu.ohmrun.walker.Stamp<T>;
+typedef StampDef<T>                   = eu.ohmrun.walker.Stamp.StampDef<T>;
 typedef Hive<T,K>                     = eu.ohmrun.walker.Hive<T,K>;
 typedef Spur<K>                       = eu.ohmrun.walker.Spur<K>;
 typedef SpurSum<K>                    = eu.ohmrun.walker.Spur.SpurSum<K>;
+typedef Request<T,K>                  = eu.ohmrun.walker.Request<T,K>;
+typedef RequestSum<T,K>               = eu.ohmrun.walker.Request.RequestSum<T,K>;
 typedef Requisition<T,K>              = eu.ohmrun.walker.Requisition<T,K>;
 typedef RequisitionDef<T,K>           = eu.ohmrun.walker.Requisition.RequisitionDef<T,K>;
 typedef Context<T,G,K>                = eu.ohmrun.walker.Context<T,G,K>;
 typedef Message<T,K>                  = eu.ohmrun.walker.Message<T,K>;
+typedef Walking<T,G,K,E>              = eu.ohmrun.walker.Walking<T,G,K,E>;
+typedef Calls<K>                      = eu.ohmrun.walker.Calls<K>;
+typedef CallsDef<K>                   = eu.ohmrun.walker.Calls.CallsDef<K>;
+typedef Buffer<T,K>                   = eu.ohmrun.walker.Buffer<T,K>;
 
 enum Selectable{
   One;
@@ -131,18 +145,7 @@ abstract ArrayOfNode<T,G,K>(Array<Node<T,G,K>>) from Array<Node<T,G,K>> to Array
 class StateDeclaration{
 
 }
-typedef CallsDef = stx.ds.RedBlackMap<String,Selector>;
 
-@:forward abstract Calls(CallsDef) from CallsDef to CallsDef{
-  static public function unit(){
-    return new Calls();
-  }
-  public function new(){
-    this = RedBlackMap.make(
-      Comparable.String()
-    );
-  }
-}
 
 
 class NodeDeclarationResolution{

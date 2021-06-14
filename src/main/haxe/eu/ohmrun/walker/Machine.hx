@@ -1,29 +1,44 @@
 package eu.ohmrun.walker;
 
 class Machine<T,G,K>{
-  public var tree(default,null):Tree<T,G,K>;
-  public var calls(default,null):Calls;
+  final tree  : Tree<T,G,K>;
+  final known : StringMap<Path>;
 
-  public function new(tree:Tree<T,G,K>,?calls:Calls){
+  public function new(tree:Tree<T,G,K>,known:StringMap<Path>){
     this.tree     = tree;
-    this.calls    = __.option(calls).def(Calls.unit);
+    this.known    = known; 
   }
-  public function copy(?tree,?calls){
-    return new Machine(
-      __.option(tree).defv(this.tree),
-      __.option(calls).defv(this.calls)
+
+  public function search(selector:Selector):Option<Path>{
+    return selector.fold(
+      id -> __.option(known.get(id)).fold(
+        ok -> Some(ok),
+        () -> tree.lookup(id).map(
+          __.command(
+            (path) -> known.set(id,path)
+          )
+        )
+      ),
+      Some
     );
   }
-  public function on(key:String,selector:Selector):Machine<T,G,K>{
-    return copy(null,calls.set(key,selector));
+  public function copy(?tree,?known){
+    return new Machine(
+      __.option(tree).defv(this.tree),
+      __.option(known).defv(this.known)
+    );
   }
-  public function to(path:Path):Res<Transition<T,G,K>,WalkerFailure>{
-    return this.tree.divergence(path).map(x -> new Transition(this,x));
+  public function to(selector:Selector):Res<Transition<T,G,K>,WalkerFailure>{
+    return this.search(selector).resolve( 
+      f -> f.of(E_Walker_CannotFindName([],selector))
+    ).flat_map(
+      path -> this.tree.divergence(path)
+    ).map(x -> new Transition(this,x));
   }
-  public function call(path:Path):Call<T,G,K>{
+  public function call(selector:Selector):Call<T,G,K>{
     return Call.lift(
       Fletcher.Anon(
-        (ipt:Context<T,G,K>,cont:Terminal<Res<Plan<T,G,K>,WalkerFailure>,Noise>) -> to(path).fold(
+        (ipt:Context<T,G,K>,cont:Terminal<Res<Plan<T,G,K>,WalkerFailure>,Noise>) -> to(selector).fold(
           (ok)  -> cont.receive(ok.reply().forward(ipt)),
           (e)   -> cont.value(__.reject(e)).serve()
         )

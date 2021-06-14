@@ -35,6 +35,25 @@ typedef TreeDef<T,G,K> = KaryTree<Node<T,G,K>>;
         lift(Nought);
     }
   }
+  public function lookup(uuid:String):Option<Path>{
+    function recursive(tree:Tree<T,G,K>,path:Array<Node<T,G,K>>){
+      return tree.value().flat_map(
+        node -> node.id.uuid.flat_map(
+          uuidI -> (uuid == uuidI).if_else(
+            () -> Some(path.snoc(node).map(node -> node.id)),
+            () -> tree.children().fold(
+              (next:Tree<T,G,K>,memo:Option<Path>) -> memo.fold(
+                ok -> Some(ok),
+                () -> recursive(next,path.snoc(node))
+              ),
+              None
+            )
+          )
+        )
+      );
+    } 
+    return recursive(this,[]);
+  }
   public function get(id:Id):Option<Tree<T,G,K>>{
     return this.children().search(
       (tree:Tree<T,G,K>) -> tree.value().map(
@@ -158,7 +177,7 @@ class TreeLift{
       (opt:Option<Twin<Tree<T,G,K>>>) -> opt.map(
         (couple:Twin<Tree<T,G,K>>) -> TransitionData.make(tree,path,couple.fst(),couple.snd())
       ).resolve(
-        f -> f.of(E_Walker_CannotFindName(path,null))
+        f -> f.of(E_Walker_CannotFindName(path.toStringArray(),null))
       )
     );
   }

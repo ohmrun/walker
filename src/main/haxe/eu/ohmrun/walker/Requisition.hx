@@ -17,4 +17,9 @@ abstract Requisition<T,K>(RequisitionDef<T,K>) from RequisitionDef<T,K> to Requi
   public function prj():RequisitionDef<T,K> return this;
   private var self(get,never):Requisition<T,K>;
   private function get_self():Requisition<T,K> return lift(this);
+
+  public var message(get,never) : Option<Message<T,K>>;
+  public function get_message():Option<Message<T,K>>{
+    return this.request.message;
+  }
 }
