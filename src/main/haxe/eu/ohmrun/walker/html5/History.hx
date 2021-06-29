@@ -1,8 +1,5 @@
 package eu.ohmrun.walker.html5;
 
-typedef HistoryMachineEvent       = eu.ohmrun.walker.html5.data.HistoryMachineEvent;
-typedef HistoryMachineEventType   = eu.ohmrun.walker.html5.data.HistoryMachineEventType;
-
 typedef Swap<T,G,K,E>             = eu.ohmrun.walker.html5.data.Swap<T,G,K,E>;
 typedef Rack<T,G,K,E>							= eu.ohmrun.walker.html5.data.Rack<T,G,K,E>;
 
@@ -79,6 +76,7 @@ class History<T,G,K,E> implements coconut.data.Model{
 									(ok) -> {
 										this.state = ok.global;
 										next_machine(transition.next());
+										Location.push(href);
 									},
 									__.crack
 								).submit();
