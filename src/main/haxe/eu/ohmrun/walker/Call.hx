@@ -68,7 +68,7 @@ class CallLift{
       self,
       ctx,
       (res:Res<Plan<T,G,K>,WalkerFailure<E>>) -> {
-        trace(res);
+        //trace(res);
         res.fold(success,__.option(failure).defv(__.crack));
       },
       __.crack

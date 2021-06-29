@@ -150,26 +150,38 @@ class TreeLift{
         (next:Twin<Tree<T,G,K,E>>) -> next.decouple(are_same)
       );
     }
+    function build(lhs:Tree<T,G,K,E>,rhs:Tree<T,G,K,E>,rec){
+      return lhs.children().zip(rhs.children()).lfold(
+        (next:Twin<Tree<T,G,K,E>>,memo:Res<Option<Twin<Tree<T,G,K,E>>>,WalkerFailure<E>>) -> {
+          return memo.flat_map(
+            (opt:Option<Twin<Tree<T,G,K,E>>>) -> opt.fold(
+              (v) -> __.accept(Some(v)),
+              ()  -> next.decouple(rec)  
+            )
+          );
+        },
+        __.accept(None)
+      );
+    }
     function rec(lhs:Tree<T,G,K,E>,rhs:Tree<T,G,K,E>):Res<Option<Twin<Tree<T,G,K,E>>>,WalkerFailure<E>>{
+      trace('$lhs\n$rhs');
       return are_same(lhs,rhs).if_else(
         () -> have_same_size(lhs,rhs).if_else(
           () -> {
             return have_same_children(lhs,rhs).if_else(
-              () -> lhs.children().zip(rhs.children()).lfold(
-                (next:Twin<Tree<T,G,K,E>>,memo:Res<Option<Twin<Tree<T,G,K,E>>>,WalkerFailure<E>>) -> memo.flat_map(
-                  (opt:Option<Twin<Tree<T,G,K,E>>>) -> opt.fold(
-                    (v) -> __.accept(Some(v)),
-                    ()  -> next.decouple(rec)  
-                  )
-                ),
-                __.accept(None)
-              ),
+              () -> build(lhs,rhs,rec),
               () -> __.accept(Some(__.couple(lhs,rhs)))
             );
           },
-          () -> __.reject(__.fault().of(E_Walker_AreDifferentNodes))
+          () -> {
+            trace('$lhs\n$rhs');
+            return __.reject(__.fault().of(E_Walker_AreDifferentNodes));
+          }
         ),
-        () -> __.reject(__.fault().of(E_Walker_AreDifferentNodes))
+        () -> {
+          trace(['${lhs},${rhs}']);
+          return __.reject(__.fault().of(E_Walker_AreDifferentNodes));
+        }
       );
     }
     var out =  rec(active,next);

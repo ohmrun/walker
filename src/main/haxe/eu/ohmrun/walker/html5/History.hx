@@ -69,8 +69,19 @@ class History<T,G,K,E> implements coconut.data.Model{
 						// assume the href is a valid route for Router<T> ?
 						location = href;
 						var path 				= locationToPath(location);
-						trace(path);
+						//trace(path);
 						var transition 	= machine.to(path).fudge();
+						var nref = 
+								transition.data.into
+									.df()
+									.array()
+									.map(
+										(x -> x.id.name)
+									).lfold(
+										(n,m) -> '${m}/${n}',
+										""
+									);
+						trace(nref);
 								transition.reply().environment(
 									Context.make(Message.unit(),state),
 									(ok) -> {
