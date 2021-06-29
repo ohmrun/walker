@@ -68,7 +68,6 @@ class History<T,G,K,E> implements coconut.data.Model{
 					case null   : // do nothing
 					case href if(isExternalLink(href)): // let browser handle
 					case href   :
-						trace("toot");
 						event.preventDefault();
 						// assume the href is a valid route for Router<T> ?
 						location = href;
