@@ -7,23 +7,23 @@ class WalkerLift{
   static public function id(wildcard:Wildcard,name:String,?uuid:String):Id{
     return Id.make(name,__.option(uuid));
   }
-  static public function root<T,G,K>():Node<T,G,K>{
+  static public function root<T,G,K,E>():Node<T,G,K,E>{
     return new NodeCls(Id.make("root"),One,Call.debug("root"));
   }
-  static public function one<T,G,K>(id:Id,?call:Call<T,G,K>,?rest:ChildrenSpec<T,G,K>):NodeSpec<T,G,K>{
+  static public function one<T,G,K,E>(id:Id,?call:Call<T,G,K,E>,?rest:ChildrenSpec<T,G,K,E>):NodeSpec<T,G,K,E>{
     return {
       id    : id,
       type  : One,
       call  : __.option(call).defv(Call.debug(id)),
-      rest  : __.option(rest).defv([])
+      rest  : __.option(rest).defv(Cluster.unit())
     };
   }
-  static public function all<T,G,K>(id:Id,?call:Call<T,G,K>,?rest:ChildrenSpec<T,G,K>):NodeSpec<T,G,K>{
+  static public function all<T,G,K,E>(id:Id,?call:Call<T,G,K,E>,?rest:ChildrenSpec<T,G,K,E>):NodeSpec<T,G,K,E>{
     return {
       id    : id,
       type  : All,
       call  : __.option(call).defv(Call.debug(id)),
-      rest  : __.option(rest).defv([])
+      rest  : __.option(rest).defv(Cluster.unit())
     }
   }
 }
@@ -34,17 +34,17 @@ class WalkerLift{
   E Error type
 **/
 class Walker<T,G,K,E>{
-  static public function one<T,G,K>(id:Id,?call:Call<T,G,K>,?rest:ChildrenSpec<T,G,K>):NodeSpec<T,G,K>{
+  static public function one<T,G,K,E>(id:Id,?call:Call<T,G,K,E>,?rest:ChildrenSpec<T,G,K,E>):NodeSpec<T,G,K,E>{
     return _.one(id,call,rest);
   }
-  static public function all<T,G,K>(id:Id,?call:Call<T,G,K>,?rest:ChildrenSpec<T,G,K>):NodeSpec<T,G,K>{
+  static public function all<T,G,K,E>(id:Id,?call:Call<T,G,K,E>,?rest:ChildrenSpec<T,G,K,E>):NodeSpec<T,G,K,E>{
     return _.all(id,call,rest);
   }
   static public var _(default,never) = WalkerLift;
   private var state       : G;
-  private final history   : Array<TransitionData<T,G,K>>;
+  private final history   : Cluster<TransitionData<T,G,K,E>>;
   private final triggers  : Map<K,Selector>;
-  private final machine   : Machine<T,G,K>;
+  private final machine   : Machine<T,G,K,E>;
   private final buffer    : Buffer<T,K>;
   private var tick        : TimeStamp;
   private final hive      : Hive<T,K>;
@@ -69,51 +69,46 @@ class Walker<T,G,K,E>{
       __.option(hive).defv(this.hive)
     );
   }
-  // public function raise(event:Event<T,K>):Walking<T,G,K,E>{
-  //   return stx.coroutine.core.Held.Guard(
-  //     Future.irreversible(
-  //       (cb) -> {
-  //         var events = this.triggers.toIter().search(
-  //           kv -> event.message.flat_map(
-  //             message -> message.name.fold(
-  //               message.name.fold(
-  //                 ()      -> this.machine.activator(),
-  //                 (name)  -> this.triggers.get(name) 
-  //               )
-  //             ) 
-  //           )
-  //         );
-  //       }
-  //     )
-  //   );
-  // }
+  public function raise(event:Event<T,K>):Walking<T,G,K,E>{
+    return Walking.lift(__.hold(stx.coroutine.core.Held.Guard(
+      Future.irreversible(
+        (cb) -> {
+          
+          // final events = this.triggers.toIter().search(
+          //   kv -> 
+          // );
+          // $type(events);
+        }
+      )
+    )));
+  }
   public function reply(){
 
   }
 }
-typedef WalkerFailure                 = eu.ohmrun.walker.WalkerFailure;
+typedef WalkerFailure<E>              = eu.ohmrun.walker.WalkerFailure<E>;
 typedef Spec                          = eu.ohmrun.walker.Spec;
-typedef NodeSpec<T,G,K>               = eu.ohmrun.walker.Spec.NodeSpec<T,G,K>;
-typedef ChildrenSpec<T,G,K>           = eu.ohmrun.walker.Spec.ChildrenSpec<T,G,K>;
+typedef NodeSpec<T,G,K,E>             = eu.ohmrun.walker.Spec.NodeSpec<T,G,K,E>;
+typedef ChildrenSpec<T,G,K,E>         = eu.ohmrun.walker.Spec.ChildrenSpec<T,G,K,E>;
 
 typedef IdDef                         = eu.ohmrun.walker.Id.IdDef;
 typedef Id                            = eu.ohmrun.walker.Id;
 
-typedef NodeCls<T,G,K>                = eu.ohmrun.walker.Node.NodeCls<T,G,K>;
-typedef Node<T,G,K>                   = eu.ohmrun.walker.Node<T,G,K>;
+typedef NodeCls<T,G,K,E>              = eu.ohmrun.walker.Node.NodeCls<T,G,K,E>;
+typedef Node<T,G,K,E>                 = eu.ohmrun.walker.Node<T,G,K,E>;
 
-typedef TransitionData<T,G,K>         = eu.ohmrun.walker.TransitionData<T,G,K>;
+typedef TransitionData<T,G,K,E>       = eu.ohmrun.walker.TransitionData<T,G,K,E>;
 
 typedef PhaseSum                      = eu.ohmrun.walker.Phase.PhaseSum;
 typedef Phase                         = eu.ohmrun.walker.Phase;
 
-typedef Machine<T,G,K>                = eu.ohmrun.walker.Machine<T,G,K>;
+typedef Machine<T,G,K,E>              = eu.ohmrun.walker.Machine<T,G,K,E>;
 
-typedef CallDef<T,G,K>                = eu.ohmrun.walker.Call.CallDef<T,G,K>;
-typedef Call<T,G,K>                   = eu.ohmrun.walker.Call<T,G,K>;
+typedef CallDef<T,G,K,E>              = eu.ohmrun.walker.Call.CallDef<T,G,K,E>;
+typedef Call<T,G,K,E>                 = eu.ohmrun.walker.Call<T,G,K,E>;
 
 typedef Selector                      = eu.ohmrun.walker.Selector;
-typedef Transition<T,G,K>             = eu.ohmrun.walker.Transition<T,G,K>;
+typedef Transition<T,G,K,E>           = eu.ohmrun.walker.Transition<T,G,K,E>;
 
 typedef Plan<T,G,K>                   = eu.ohmrun.walker.Plan<T,G,K>;
 typedef PlanCls<T,G,K>                = eu.ohmrun.walker.Plan.PlanCls<T,G,K>;
@@ -136,12 +131,10 @@ typedef Walking<T,G,K,E>              = eu.ohmrun.walker.Walking<T,G,K,E>;
 typedef Calls<K>                      = eu.ohmrun.walker.Calls<K>;
 typedef CallsDef<K>                   = eu.ohmrun.walker.Calls.CallsDef<K>;
 typedef Buffer<T,K>                   = eu.ohmrun.walker.Buffer<T,K>;
+typedef Failures                      = eu.ohmrun.walker.Failures;
+typedef Selectable                    = eu.ohmrun.walker.Selectable;
 
-enum Selectable{
-  One;
-  All;
-}
-abstract ArrayOfNode<T,G,K>(Array<Node<T,G,K>>) from Array<Node<T,G,K>> to Array<Node<T,G,K>>{}
+abstract ClusterOfNode<T,G,K,E>(Cluster<Node<T,G,K,E>>) from Cluster<Node<T,G,K,E>> to Cluster<Node<T,G,K,E>>{}
 class StateDeclaration{
 
 }

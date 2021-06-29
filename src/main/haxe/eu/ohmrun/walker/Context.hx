@@ -2,12 +2,19 @@ package eu.ohmrun.walker;
 
 class Context<T,G,K>{
 
-  static public function make<T,G,K>(message:Message<T,K>,global:G,?phase,origin,cursor,?buffer){
-    return new Context(message,global,__.option(phase).defv(Enter),origin,cursor,buffer);
+  static public function make<T,G,K>(message:Message<T,K>,global:G,?phase,?origin,?cursor,?buffer){
+    return new Context(
+      message,
+      global,
+      __.option(phase).defv(Enter),
+      __.option(origin).defv(Id.make("")),
+      __.option(cursor).defv(Id.make("")),
+      buffer
+    );
   }
-  public var message(default,null):Message<T,K>;
-  public var global(default,null):G;   
-  public var phase(default,null):Phase;
+  public final message        : Message<T,K>;
+  public final global         : G;   
+  public final phase          : Phase;
 
   public final origin         : Id;
   public final cursor         : Id;
@@ -22,7 +29,7 @@ class Context<T,G,K>{
    
     this.cursor   = cursor;
 
-    this.buffer = __.option(buffer).defv([]);
+    this.buffer = __.option(buffer).defv(Cluster.unit());
   } 
   public function raise(request:Request<T,K>){
     return copy(

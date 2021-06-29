@@ -2,7 +2,7 @@ package eu.ohmrun.walker;
 
 import stx.coroutine.core.Coroutine;
 
-typedef WalkingDef<T,G,K,E> = CoroutineSum<Walker<T,G,K,E>,Walker<T,G,K,E>,Walker<T,G,K,E>,WalkerFailure>;
+typedef WalkingDef<T,G,K,E> = CoroutineSum<Walker<T,G,K,E>,Walker<T,G,K,E>,Walker<T,G,K,E>,WalkerFailure<E>>;
 
 //@:using(e)
 abstract Walking<T,G,K,E>(WalkingDef<T,G,K,E>) from WalkingDef<T,G,K,E> to WalkingDef<T,G,K,E>{

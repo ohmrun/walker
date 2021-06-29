@@ -20,7 +20,7 @@ class PlanCls<T,G,K>{
     return lift(new PlanCls(global,buffer));
   }
   @:from static public function fromG<T,G,K>(self:G){
-    return lift(new PlanCls(self,[]));
+    return lift(new PlanCls(self,Cluster.unit()));
   }
   public function prj():PlanCls<T,G,K> return this;
   private var self(get,never):Plan<T,G,K>;

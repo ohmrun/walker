@@ -1,9 +1,9 @@
 package eu.ohmrun.walker;
 
-class NodeCls<T,G,K>{
-  public var id(default,null):Id;
-  public var type(default,null):Selectable;
-  public var call(default,null):Call<T,G,K>;
+class NodeCls<T,G,K,E>{
+  public final id:Id;
+  public final type:Selectable;
+  public final call:Call<T,G,K,E>;
 
   public function new(id,type,?call){
     this.id       = id;
@@ -14,22 +14,22 @@ class NodeCls<T,G,K>{
   public function toString(){ return '$type:$id'; }
 }
 @:using(eu.ohmrun.walker.Node.NodeLift)
-@:forward abstract Node<T,G,K>(NodeCls<T,G,K>) from NodeCls<T,G,K> to NodeCls<T,G,K>{
+@:forward abstract Node<T,G,K,E>(NodeCls<T,G,K,E>) from NodeCls<T,G,K,E> to NodeCls<T,G,K,E>{
   static public var _(default,never) = NodeLift;
   public function new(self) this = self;
 }
 class NodeLift{
-  static public function eq<T,G,K>():Eq<Node<T,G,K>>{
+  static public function eq<T,G,K,E>():Eq<Node<T,G,K,E>>{
     return Eq.Anon(
-      (l:Node<T,G,K>,r:Node<T,G,K>) -> Id._.eq().applyII(l.id,r.id)
+      (l:Node<T,G,K,E>,r:Node<T,G,K,E>) -> Id._.eq().applyII(l.id,r.id)
     );
   }
-  static public function ord<T,G,K>():Ord<Node<T,G,K>>{
+  static public function ord<T,G,K,E>():Ord<Node<T,G,K,E>>{
     return Ord.Anon(
-      (l:Node<T,G,K>,r:Node<T,G,K>) -> Id._.lt().applyII(l.id,r.id)
+      (l:Node<T,G,K,E>,r:Node<T,G,K,E>) -> Id._.lt().applyII(l.id,r.id)
     );
   }
-  static public function equals<T,G,K>(self:Node<T,G,K>,that:Node<T,G,K>):Bool{
+  static public function equals<T,G,K,E>(self:Node<T,G,K,E>,that:Node<T,G,K,E>):Bool{
     return self.id.equals(that.id);
   }
 }

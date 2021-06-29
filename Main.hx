@@ -2,6 +2,7 @@ using eu.ohmrun.Walker;
 
 class Main {
 	static function main() {
+		trace("main");
 		var log_facade = stx.log.Facade.unit();
 				//log_facade.includes.push("eu.ohmrun.walker");
 				//log_facade.includes.push("eu.ohmrun.walker.test");

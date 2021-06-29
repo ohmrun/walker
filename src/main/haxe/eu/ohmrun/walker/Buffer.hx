@@ -1,8 +1,8 @@
 package eu.ohmrun.walker;
 
-typedef BufferDef<T,K> = Array<Stamp<Event<T,K>>>;
+typedef BufferDef<T,K> = Cluster<Stamp<Event<T,K>>>;
 
-@:forward(iterator) abstract Buffer<T,K>(BufferDef<T,K>) from BufferDef<T,K> to BufferDef<T,K>{
+@:forward(iterator,concat,snoc) abstract Buffer<T,K>(BufferDef<T,K>) from BufferDef<T,K> to BufferDef<T,K>{
   public function new(self) this = self;
   static public function lift<T,K>(self:BufferDef<T,K>):Buffer<T,K> return new Buffer(self);
 

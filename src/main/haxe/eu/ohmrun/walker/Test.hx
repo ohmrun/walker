@@ -6,6 +6,7 @@ using stx.unit.Test;
 
 import eu.ohmrun.walker.Spec;
 import eu.ohmrun.Walker.*;
+import eu.ohmrun.walker.test.*;
 
 using eu.ohmrun.walker.Test;
 
@@ -14,9 +15,11 @@ class Test{
     return new stx.Log().tag("eu.ohmrun.walker.test");
   }
   static public function main(){
-    __.unit([
-      new WalkerTest()
-    ],[]);
+    #if !macro
+      __.unit([
+        new HistoryTest()
+      ],[]);
+    #end
   }
 }
 class WalkerTest extends TestCase{

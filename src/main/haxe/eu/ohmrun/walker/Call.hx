@@ -1,15 +1,15 @@
 package eu.ohmrun.walker;
 
-typedef CallDef<T,G,K> = FletcherDef<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFailure>,Noise>;
+typedef CallDef<T,G,K,E> = FletcherDef<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFailure<E>>,Noise>;
 
 @:using(eu.ohmrun.fletcher.Attempt.AttemptLift)
 @:using(eu.ohmrun.walker.Call.CallLift)
-@:forward abstract Call<T,G,K>(CallDef<T,G,K>) from CallDef<T,G,K> to CallDef<T,G,K>{
-  public function new(self:CallDef<T,G,K>) this = self;
-  @:noUsing static public function lift<T,G,K>(self:CallDef<T,G,K>):Call<T,G,K>{
+@:forward abstract Call<T,G,K,E>(CallDef<T,G,K,E>) from CallDef<T,G,K,E> to CallDef<T,G,K,E>{
+  public function new(self:CallDef<T,G,K,E>) this = self;
+  @:noUsing static public function lift<T,G,K,E>(self:CallDef<T,G,K,E>):Call<T,G,K,E>{
     return new Call(self);
   }
-  @:noUsing static public function debug<T,G,K>(id:Id):Call<T,G,K>{
+  @:noUsing static public function debug<T,G,K,E>(id:Id):Call<T,G,K,E>{
     return lift(
       Fletcher.Sync(
         (context:Context<T,G,K>) -> {
@@ -19,7 +19,7 @@ typedef CallDef<T,G,K> = FletcherDef<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFailur
       )
     );
   }
-  @:noUsing static public function unit<T,G,K>(){
+  @:noUsing static public function unit<T,G,K,E>(){
     return lift(
       Fletcher.Sync(
         (context:Context<T,G,K>) -> {
@@ -29,10 +29,10 @@ typedef CallDef<T,G,K> = FletcherDef<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFailur
       )
     );
   }
-  @:to public function toFletcher():Fletcher<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFailure>,Noise>{
+  @:to public function toFletcher():Fletcher<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFailure<E>>,Noise>{
     return Fletcher.lift(this);
   }
-  @:from static public function fromFContextVoid<T,G,K>(fn:Context<T,G,K>->Void){
+  @:from static public function fromFContextVoid<T,G,K,E>(fn:Context<T,G,K>->Void){
     return lift(
       Fletcher.Sync(
         (ctx:Context<T,G,K>) -> {
@@ -42,10 +42,10 @@ typedef CallDef<T,G,K> = FletcherDef<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFailur
       )  
     );
   }
-  @:to public function toAttempt():Attempt<Context<T,G,K>,Plan<T,G,K>,WalkerFailure>{
+  @:to public function toAttempt():Attempt<Context<T,G,K>,Plan<T,G,K>,WalkerFailure<E>>{
     return Attempt.lift(this);
   }
-  public function symmetric():Attempt<Context<T,G,K>,Context<T,G,K>,WalkerFailure>{
+  public function symmetric():Attempt<Context<T,G,K>,Context<T,G,K>,WalkerFailure<E>>{
     return Attempt.lift(
       Attempt.lift(this).broach().convert(
         Fletcher.Sync(
@@ -58,16 +58,16 @@ typedef CallDef<T,G,K> = FletcherDef<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFailur
       )
     );
   }
-  public function seq(that:Call<T,G,K>):Call<T,G,K>{
+  public function seq(that:Call<T,G,K,E>):Call<T,G,K,E>{
     return lift(symmetric().attempt(that));
   }
 }
 class CallLift{
-  static public function environment<T,G,K>(self:Call<T,G,K>,ctx:Context<T,G,K>,success:Plan<T,G,K>->Void,?failure:Err<WalkerFailure>->Void){
+  static public function environment<T,G,K,E>(self:Call<T,G,K,E>,ctx:Context<T,G,K>,success:Plan<T,G,K>->Void,?failure:Err<WalkerFailure<E>>->Void){
     return Fletcher._.environment(
       self,
       ctx,
-      (res:Res<Plan<T,G,K>,WalkerFailure>) -> {
+      (res:Res<Plan<T,G,K>,WalkerFailure<E>>) -> {
         trace(res);
         res.fold(success,__.option(failure).defv(__.crack));
       },

@@ -3,6 +3,8 @@ package eu.ohmrun;
 using Lambda;
 import haxe.ds.StringMap;
 
+import Std.downcast;
+
 using tink.CoreApi;
 
 using stx.Pico;

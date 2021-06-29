@@ -1,0 +1,21 @@
+{
+  "build" : {
+    "-D"   : ["no-deprecation-warnings"],
+    "-lib" : [
+      "hx3compat","stx_pico", "stx_nano", "stx_ds", "stx_fn", "stx_fp", "stx_test", 
+      "stx_coroutine", "fletcher", "coconut.data","coconut.ui","spectatory","tink_state",
+      "tink_hxx"
+    ],
+    "-cp" : "src/main/haxe",
+    "html" : {
+      "-lib"  : [
+        "xDOM","coconut.vdom"
+      ],
+      "-main" : "Main",
+      "-js"   : "build/html/index.js"
+    }
+  },
+  "run" : {
+    "html" : []
+  }
+}

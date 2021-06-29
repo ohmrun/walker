@@ -1,19 +1,22 @@
 package eu.ohmrun.walker;
 
-abstract Path(Array<Id>) from Array<Id> to Array<Id>{
-  @:noUsing static public function lift(self:Array<Id>):Path{
+@:forward(head) abstract Path(Cluster<Id>) from Cluster<Id> to Cluster<Id>{
+  @:arrayAccess public function get(int:Int){
+    return this[int];
+  }
+  @:noUsing static public function lift(self:Cluster<Id>):Path{
     return self;
   }
   @:noUsing static public function unit(){
     return lift([]);
   }
-  @:from static public function fromArrayOfString(self:Array<String>):Path{
+  @:from static public function fromClusterOfString(self:Cluster<String>):Path{
     return lift(self.map( (str:String) -> Id.fromString(str)));
   }
   public function toString():String{
     return 'Path('+this.map(
       (couple) -> couple.toString()
-    ).join(', ') + ")";
+    ).lfold1((n,m) -> '$m, $n') + ")";
   }
   public function tail():Path{
     return this.tail();
@@ -21,7 +24,7 @@ abstract Path(Array<Id>) from Array<Id> to Array<Id>{
   public function snoc(v:Id):Path{
     return this.snoc(v);
   }
-  public function toStringArray():Array<String>{
+  public function toStringCluster():Cluster<String>{
     return this.map(x -> x.name);
   }
 }
