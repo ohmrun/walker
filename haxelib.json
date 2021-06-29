@@ -27,7 +27,7 @@
 
 
         "fletcher"          : "git:https://github.com/ohmrun/fletcher.git",
-        "spectatory"        : "gh:kevinresol/spectatory"
+        "spectatory"        : "git:https://github.com/kevinresol/spectatory.git"
 
     },
     "classPath": "src/main/haxe"
