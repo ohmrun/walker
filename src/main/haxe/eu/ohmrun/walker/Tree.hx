@@ -151,6 +151,8 @@ class TreeLift{
       );
     }
     function build(lhs:Tree<T,G,K,E>,rhs:Tree<T,G,K,E>,rec){
+      //trace(lhs.children());
+      //trace(rhs.children());
       return lhs.children().zip(rhs.children()).lfold(
         (next:Twin<Tree<T,G,K,E>>,memo:Res<Option<Twin<Tree<T,G,K,E>>>,WalkerFailure<E>>) -> {
           return memo.flat_map(
@@ -164,32 +166,34 @@ class TreeLift{
       );
     }
     function rec(lhs:Tree<T,G,K,E>,rhs:Tree<T,G,K,E>):Res<Option<Twin<Tree<T,G,K,E>>>,WalkerFailure<E>>{
-      trace('$lhs\n$rhs');
+      //trace('$lhs\n$rhs');
       return are_same(lhs,rhs).if_else(
         () -> have_same_size(lhs,rhs).if_else(
           () -> {
             return have_same_children(lhs,rhs).if_else(
-              () -> build(lhs,rhs,rec),
-              () -> __.accept(Some(__.couple(lhs,rhs)))
+              () -> (build(lhs,rhs,rec)),
+              () -> (__.accept(Some(__.couple(lhs,rhs))))
             );
           },
           () -> {
-            trace('$lhs\n$rhs');
+            //trace('ARE SAME SIZE: $lhs\n$rhs');
             return __.reject(__.fault().of(E_Walker_AreDifferentNodes));
           }
         ),
         () -> {
-          trace(['${lhs},${rhs}']);
+          //trace(['${lhs},${rhs}']);
           return __.reject(__.fault().of(E_Walker_AreDifferentNodes));
         }
       );
     }
     var out =  rec(active,next);
+    $type(out);
     return out.flat_map(
-      (opt:Option<Twin<Tree<T,G,K,E>>>) -> opt.map(
+      (opt:Option<Twin<Tree<T,G,K,E>>>) -> __.accept(opt.map(
         (couple:Twin<Tree<T,G,K,E>>) -> TransitionData.make(tree,path,couple.fst(),couple.snd())
-      ).resolve(
-        f -> f.of(E_Walker_CannotFindName(path.toStringCluster(),null))
+        ).def(
+          () -> TransitionData.make(tree,path,active,next)
+        )
       )
     );
   }
