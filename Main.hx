@@ -17,7 +17,7 @@ import eu.ohmrun.walker.test.HistoryTest;
 class Main {
 	static function main() {
 		trace("main");
-		var log_facade = stx.log.Facade.unit();
+		var log_facade = __.log().global();
 				//log_facade.includes.push("eu.ohmrun.walker");
 				//log_facade.includes.push("eu.ohmrun.walker.test");
 				//log_facade.includes.push("stx.async");
