@@ -1,5 +1,6 @@
 package eu.ohmrun.walker.test;
 
+#if js
 import js.Browser.*;
 import coconut.Ui.hxx;
 import eu.ohmrun.walker.html5.History;
@@ -72,3 +73,4 @@ class HistoryTestLeaf extends coconut.ui.View{
   @:attribute var link : String;
   public function render() '<a href=${link}>$text</a>';
 }
+#end
