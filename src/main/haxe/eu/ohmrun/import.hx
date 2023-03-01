@@ -12,6 +12,7 @@ using stx.Nano;
 using stx.Ds;
 using stx.Fp;
 using stx.Fn;
+using stx.Fail;
 using stx.Assert;
 using stx.Log;
 using stx.Coroutine;

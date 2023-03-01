@@ -29,7 +29,7 @@ abstract Request<T,K>(RequestSum<T,K>) from RequestSum<T,K> to RequestSum<T,K>{
       this,
       x   -> __.option(x),
       x   -> __.option(x),
-      ft  -> __.nano().Ft().value(ft) 
+      ft  -> __.nano().Future().squeeze(ft) 
     );
   }
 }

@@ -63,7 +63,7 @@ typedef CallDef<T,G,K,E> = FletcherDef<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFail
   }
 }
 class CallLift{
-  static public function environment<T,G,K,E>(self:Call<T,G,K,E>,ctx:Context<T,G,K>,success:Plan<T,G,K>->Void,?failure:Err<WalkerFailure<E>>->Void){
+  static public function environment<T,G,K,E>(self:Call<T,G,K,E>,ctx:Context<T,G,K>,success:Plan<T,G,K>->Void,?failure:Refuse<WalkerFailure<E>>->Void){
     return Fletcher._.environment(
       self,
       ctx,

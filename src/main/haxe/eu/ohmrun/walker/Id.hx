@@ -44,7 +44,7 @@ class IdLift{
   }
   static public function lt():Ord<Id>{
     return Ord.Anon(
-      (l:Id,r:Id) -> Ord.String().applyII(l.name,r.name)
+      (l:Id,r:Id) -> Ord.String().comply(l.name,r.name)
     );
 
   }

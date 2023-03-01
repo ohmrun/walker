@@ -21,12 +21,12 @@ class NodeCls<T,G,K,E>{
 class NodeLift{
   static public function eq<T,G,K,E>():Eq<Node<T,G,K,E>>{
     return Eq.Anon(
-      (l:Node<T,G,K,E>,r:Node<T,G,K,E>) -> Id._.eq().applyII(l.id,r.id)
+      (l:Node<T,G,K,E>,r:Node<T,G,K,E>) -> Id._.eq().comply(l.id,r.id)
     );
   }
   static public function ord<T,G,K,E>():Ord<Node<T,G,K,E>>{
     return Ord.Anon(
-      (l:Node<T,G,K,E>,r:Node<T,G,K,E>) -> Id._.lt().applyII(l.id,r.id)
+      (l:Node<T,G,K,E>,r:Node<T,G,K,E>) -> Id._.lt().comply(l.id,r.id)
     );
   }
   static public function equals<T,G,K,E>(self:Node<T,G,K,E>,that:Node<T,G,K,E>):Bool{

@@ -23,7 +23,7 @@ typedef NodeSpecDef<T,G,K,E> = {
     return self;
   }
   public function toString(){
-    return __.that().exists().ok()(this.rest).if_else(
+    return __.that().exists().apply(this.rest).is_ok().if_else(
       () -> this.rest.is_defined().if_else(
         () -> '${this.id}(${this.rest})',
         ()  -> '${this.id}'
@@ -38,7 +38,9 @@ typedef NodeSpecDef<T,G,K,E> = {
       (next:NodeSpec<T,G,K,E>,memo:LinkedList<KaryTree<Node<T,G,K,E>>>) -> memo.cons(next.toTree()),
       LinkedList.unit()
     );
-    var head = rest.is_defined().if_else(() -> Branch(node,rest),() -> Branch(node));
+    var head = rest.is_defined().if_else(
+      () -> Branch(node,rest),() -> Branch(node,LinkedList.unit())
+    );
     return Tree.lift(head);
   }
   public function asNodeSpecDef():NodeSpecDef<T,G,K,E>{

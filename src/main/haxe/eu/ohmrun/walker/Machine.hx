@@ -14,9 +14,10 @@ class Machine<T,G,K,E>{
       id -> __.option(cache.get(id)).fold(
         ok -> Some(ok),
         () -> tree.lookup(id).map(
-          __.command(
-            (path) -> cache.set(id,path)
-          )
+          (path) -> {
+            cache.set(id,path);
+            return path;
+          }
         )
       ),
       Some

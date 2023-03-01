@@ -1,4 +1,4 @@
-package eu.ohmrun.walker;
+package eu.ohmrun.walker.test;
 
 class OldTest extends TestCase{
   public function _test_build_tree_0(){

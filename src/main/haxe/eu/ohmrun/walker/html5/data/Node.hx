@@ -75,17 +75,17 @@ class NodeLift{
   static public function lt<T,G,K,E>(l:Node<T,G,K,E>,r:Node<T,G,K,E>){
     return switch([l.delegate,r.delegate]){
       case [RackNode(_),SwapNode(_)]  : LessThan;
-      case [RackNode(l),RackNode(r)]  : Ord.String().applyII('${l.uuid}','${r.uuid}');
+      case [RackNode(l),RackNode(r)]  : Ord.String().comply('${l.uuid}','${r.uuid}');
       case [SwapNode(_),RackNode(_)]  : NotLessThan;
-      case [SwapNode(l),SwapNode(r)]  : Ord.String().applyII('${l.uuid}','${r.uuid}'); 
+      case [SwapNode(l),SwapNode(r)]  : Ord.String().comply('${l.uuid}','${r.uuid}'); 
     }
   }
   static public function eq<T,G,K,E>(l:Node<T,G,K,E>,r:Node<T,G,K,E>){
     return switch([l.delegate,r.delegate]){
       case [RackNode(_),SwapNode(_)]  : NotEqual;
-      case [RackNode(l),RackNode(r)]  : Eq.String().applyII('${l.uuid}','${r.uuid}');
+      case [RackNode(l),RackNode(r)]  : Eq.String().comply('${l.uuid}','${r.uuid}');
       case [SwapNode(_),RackNode(_)]  : NotEqual;
-      case [SwapNode(l),SwapNode(r)]  : Eq.String().applyII('${l.uuid}','${r.uuid}'); 
+      case [SwapNode(l),SwapNode(r)]  : Eq.String().comply('${l.uuid}','${r.uuid}'); 
     }
   }
 }

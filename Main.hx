@@ -4,20 +4,32 @@ using stx.Nano;
 using stx.Pico;
 using stx.Log;
 
+import tink.core.Noise;
+
 #if js
 import js.Browser.*;
-#end
-
-
-import tink.core.Noise;
-import coconut.Ui.hxx;
 import eu.ohmrun.walker.html5.History;
 import eu.ohmrun.walker.test.HistoryTest;
 
+import coconut.Ui.hxx;
+
+class Main{
+	static public function main(){
+		if(document.getElementById('app') == null){
+      __.log().info("mount");
+      final document            = js.Browser.document;
+      final el                  = document.createDivElement();
+            el.setAttribute("id",'app');
+            document.body.appendChild(el);
+      final value               = hxx('<HistoryTestRootView history=${new History({state : Noise})}/>');
+            coconut.ui.Renderer.mount(el,value);
+	}
+}
+#else
 class Main {
 	static function main() {
 		trace("main");
-		var log_facade = __.log().global();
+		var log_facade = __.log().global;
 				//log_facade.includes.push("eu.ohmrun.walker");
 				//log_facade.includes.push("eu.ohmrun.walker.test");
 				//log_facade.includes.push("stx.async");
@@ -30,15 +42,7 @@ class Main {
 				// 			//_.tag('x')		
 				// 	);
 					
-		//eu.ohmrun.walker.Test.main();
-		if(document.getElementById('app') == null){
-      __.log().info("mount");
-      final document            = js.Browser.document;
-      final el                  = document.createDivElement();
-            el.setAttribute("id",'app');
-            document.body.appendChild(el);
-      final value               = hxx('<HistoryTestRootView history=${new History({state : Noise})}/>');
-            coconut.ui.Renderer.mount(el,value);
-		}
+		//eu.ohmrun.walker.Test.main();		
 	}
 }
+#end

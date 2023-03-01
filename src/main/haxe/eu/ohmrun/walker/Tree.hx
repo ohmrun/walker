@@ -62,7 +62,7 @@ typedef TreeDef<T,G,K,E> = KaryTree<Node<T,G,K,E>>;
     );
   }
   public function path(path:Path,?depth=0):Tree<T,G,K,E>{
-    __.log()('path $path on ${this.value()}');
+    __.log().debug('path $path on ${this.value()}');
     return switch([__.option(this.value()),path.head()]){
       case [Some(node),Some(head)] if (node.type == One) : 
         make(
