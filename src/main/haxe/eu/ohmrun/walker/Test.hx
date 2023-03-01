@@ -2,7 +2,7 @@ package eu.ohmrun.walker;
 
 using Lambda;
 
-using stx.unit.Test;
+using stx.Test;
 
 import eu.ohmrun.walker.Spec;
 import eu.ohmrun.Walker.*;
