@@ -15,7 +15,8 @@
       "-js"   : "build/html/index.js"
     },
     "main" : {
-      "-main" : "Main"      
+      "-main" : "Main",     
+      "--interp" : true
     } 
   },
   "run" : {
