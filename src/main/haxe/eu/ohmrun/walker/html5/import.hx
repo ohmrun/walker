@@ -12,5 +12,7 @@ import tink.url.*;
 import tink.pure.*;
 import tink.state.*;
 
+#if js
 import coconut.data.Patch;
+#end
 using eu.ohmrun.walker.html5.History;

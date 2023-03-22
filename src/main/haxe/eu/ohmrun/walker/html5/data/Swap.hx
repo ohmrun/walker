@@ -1,5 +1,6 @@
 package eu.ohmrun.walker.html5.data;
 
+#if js
 class Swap<T,G,K,E> extends coconut.ui.View{
   public function new(){
     this.register.set(
@@ -41,3 +42,4 @@ class Swap<T,G,K,E> extends coconut.ui.View{
     return nodes;
   }
 }
+#end

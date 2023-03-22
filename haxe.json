@@ -2,7 +2,7 @@
   "build" : {
     "-D"   : ["no-deprecation-warnings"],
     "-lib" : [
-      "stx_pico", "stx_nano", "stx_ds", "stx_fn", "stx_fp", "stx_test", 
+      "stx_pico", "stx_nano", "stx_ds", "stx_fn", "stx_fp", 
       "stx_coroutine", "fletcher", "coconut.data","coconut.ui","spectatory","tink_state",
       "tink_hxx"
     ],
@@ -17,7 +17,14 @@
     "main" : {
       "-main" : "Main",     
       "--interp" : true
-    } 
+    },
+    "test" : {
+      "-cp" : "src/test/haxe",
+      "-L" : ["stx_test"] 
+    },
+    "unit" : {
+      "--macro" : ["include('eu.ohmrun.walker',true)"]
+    }
   },
   "run" : {
     "html" : []

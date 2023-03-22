@@ -1,5 +1,6 @@
 package eu.ohmrun.walker.html5.data;
 
+#if js
 enum NodeSum<T,G,K,E>{
   RackNode(rack:Rack<T,G,K,E>);
   SwapNode(swap:Swap<T,G,K,E>);
@@ -89,3 +90,4 @@ class NodeLift{
     }
   }
 }
+#end

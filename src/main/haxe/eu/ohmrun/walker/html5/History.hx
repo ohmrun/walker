@@ -1,5 +1,6 @@
 package eu.ohmrun.walker.html5;
 
+#if js
 typedef Swap<T,G,K,E>             = eu.ohmrun.walker.html5.data.Swap<T,G,K,E>;
 typedef Rack<T,G,K,E>							= eu.ohmrun.walker.html5.data.Rack<T,G,K,E>;
 
@@ -95,3 +96,4 @@ class History<T,G,K,E> implements coconut.data.Model{
 		}
 	}
 } 
+#end

@@ -1,5 +1,6 @@
 package eu.ohmrun.walker.html5.data;
 
+#if js
 class Util{
   static public function toCluster(self:NodeList):Cluster<js.html.Node>{
     var array = [];
@@ -9,3 +10,4 @@ class Util{
     return Cluster.lift(array);
   }
 }
+#end
