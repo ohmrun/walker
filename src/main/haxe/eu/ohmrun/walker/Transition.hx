@@ -31,7 +31,7 @@ class Transition<T,G,K,E>{
          .broach()
          .map(
           (tp:Couple<Context<T,G,K>,Plan<T,G,K>>) -> {
-            __.log().debug(_ -> _.show(tp));
+            __.log().debug(_ -> _.pure(tp));
             var ctx = tp.fst().copy(
               null,
               tp.snd().global,

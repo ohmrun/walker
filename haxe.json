@@ -23,7 +23,9 @@
       "-L" : ["stx_test"] 
     },
     "unit" : {
-      "--macro" : ["include('eu.ohmrun.walker',true)"]
+      "--macro" : [
+        "include('eu.ohmrun.walker',true,['eu.ohmrun.walker.html5'])"
+      ]
     }
   },
   "run" : {
