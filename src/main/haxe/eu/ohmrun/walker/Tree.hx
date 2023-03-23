@@ -187,7 +187,7 @@ class TreeLift{
       );
     }
     var out =  rec(active,next);
-    $type(out);
+    //$type(out);
     return out.flat_map(
       (opt:Option<Twin<Tree<T,G,K,E>>>) -> __.accept(opt.map(
         (couple:Twin<Tree<T,G,K,E>>) -> TransitionData.make(tree,path,couple.fst(),couple.snd())
