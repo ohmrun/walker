@@ -1,5 +1,6 @@
 package eu.ohmrun.walker.html5.data;
 
+#if js
 @:default(Register.ZERO)
 class Register{
   static public var ZERO = new Register();
@@ -20,3 +21,4 @@ class Register{
     
   }
 }
+#end

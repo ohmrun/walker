@@ -1,7 +1,6 @@
 package eu.ohmrun.walker.html5.data;
 
-//typedef CallDef<T,G,K,E> = FletcherDef<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFailure<E>>,Noise>;
-
+#if js
 @:forward abstract Into<T,G,K,E>(Call<T,G,K,E>) from Call<T,G,K,E> to Call<T,G,K,E>{
   public function new(self) this = self;
   static public function lift<T,G,K,E>(self:Call<T,G,K,E>):Into<T,G,K,E> return new Into(self);
@@ -22,3 +21,4 @@ package eu.ohmrun.walker.html5.data;
   private var self(get,never):Into<T,G,K,E>;
   private function get_self():Into<T,G,K,E> return lift(this);
 }
+#end

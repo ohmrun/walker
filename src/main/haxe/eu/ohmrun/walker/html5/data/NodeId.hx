@@ -1,5 +1,6 @@
 package eu.ohmrun.walker.html5.data;
 
+#if js
 class NodeId{
   public final name : String;
   public final uuid : String;
@@ -38,3 +39,4 @@ class NodeId{
     );
   }
 }
+#end

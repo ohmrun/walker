@@ -1,6 +1,9 @@
 package eu.ohmrun.walker.html5.data;
 
+#if js
+
 import stx.ds.kary_tree.KaryTreeZip;
+
 
 class Port<T,G,K,E> extends coconut.ui.View{
   @:ref                   var self      : Element;
@@ -112,3 +115,4 @@ private class Discriminator<T,G,K,E>{
     return this.node.get_substates();
   }
 }
+#end
