@@ -1,5 +1,11 @@
 package eu.ohmrun;
 
+using tink.CoreApi;
+
+using stx.Coroutine;
+using stx.Nano;
+using stx.Log;
+
 class WalkerLift{
   static public function log(wildcard:Wildcard):Log{
     return new stx.Log().tag("eu.ohmrun.walker");
