@@ -1,6 +1,6 @@
 package eu.ohmrun.walker;
 
-typedef CallDef<T,G,K,E> = FletcherDef<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFailure<E>>,Noise>;
+typedef CallDef<T,G,K,E> = FletcherDef<Context<T,G,K>,Upshot<Plan<T,G,K>,WalkerFailure<E>>,Noise>;
 
 @:using(eu.ohmrun.fletcher.Attempt.AttemptLift)
 @:using(eu.ohmrun.walker.Call.CallLift)
@@ -29,7 +29,7 @@ typedef CallDef<T,G,K,E> = FletcherDef<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFail
       )
     );
   }
-  @:to public function toFletcher():Fletcher<Context<T,G,K>,Res<Plan<T,G,K>,WalkerFailure<E>>,Noise>{
+  @:to public function toFletcher():Fletcher<Context<T,G,K>,Upshot<Plan<T,G,K>,WalkerFailure<E>>,Noise>{
     return Fletcher.lift(this);
   }
   @:from static public function fromFContextVoid<T,G,K,E>(fn:Context<T,G,K>->Void){
@@ -67,7 +67,7 @@ class CallLift{
     return Fletcher._.environment(
       self,
       ctx,
-      (res:Res<Plan<T,G,K>,WalkerFailure<E>>) -> {
+      (res:Upshot<Plan<T,G,K>,WalkerFailure<E>>) -> {
         //trace(res);
         res.fold(success,__.option(failure).defv(__.crack));
       },

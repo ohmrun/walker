@@ -156,7 +156,7 @@ class OldTest extends TestCase{
     var machine0     = new Machine(tree);
     var init         = machine0.activator();
 
-    //Res.value -> Option
+    //Upshot.value -> Option
     //Option.fudge -> Null<Transition>
 
     var transition0  = machine0.to(path0).value().fudge();//if it's a bad path, an error will be thrown on `fudge`

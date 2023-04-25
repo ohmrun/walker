@@ -130,7 +130,7 @@ class TreeLift{
   /**
     Produces the Tree representing the downward activation path.
   **/
-  static public function divergence<T,G,K,E>(tree:Tree<T,G,K,E>,path:Path):Res<TransitionData<T,G,K,E>,WalkerFailure<E>>{
+  static public function divergence<T,G,K,E>(tree:Tree<T,G,K,E>,path:Path):Upshot<TransitionData<T,G,K,E>,WalkerFailure<E>>{
     var active  = tree.active();
     var next    = tree.path(path);
     
@@ -154,7 +154,7 @@ class TreeLift{
       //trace(lhs.children());
       //trace(rhs.children());
       return lhs.children().zip(rhs.children()).lfold(
-        (next:Twin<Tree<T,G,K,E>>,memo:Res<Option<Twin<Tree<T,G,K,E>>>,WalkerFailure<E>>) -> {
+        (next:Twin<Tree<T,G,K,E>>,memo:Upshot<Option<Twin<Tree<T,G,K,E>>>,WalkerFailure<E>>) -> {
           return memo.flat_map(
             (opt:Option<Twin<Tree<T,G,K,E>>>) -> opt.fold(
               (v) -> __.accept(Some(v)),
@@ -165,7 +165,7 @@ class TreeLift{
         __.accept(None)
       );
     }
-    function rec(lhs:Tree<T,G,K,E>,rhs:Tree<T,G,K,E>):Res<Option<Twin<Tree<T,G,K,E>>>,WalkerFailure<E>>{
+    function rec(lhs:Tree<T,G,K,E>,rhs:Tree<T,G,K,E>):Upshot<Option<Twin<Tree<T,G,K,E>>>,WalkerFailure<E>>{
       //trace('$lhs\n$rhs');
       return are_same(lhs,rhs).if_else(
         () -> have_same_size(lhs,rhs).if_else(

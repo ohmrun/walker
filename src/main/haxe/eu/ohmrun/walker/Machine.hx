@@ -29,7 +29,7 @@ class Machine<T,G,K,E>{
       __.option(cache).defv(this.cache)
     );
   }
-  public function to(selector:Selector):Res<Transition<T,G,K,E>,WalkerFailure<E>>{
+  public function to(selector:Selector):Upshot<Transition<T,G,K,E>,WalkerFailure<E>>{
     return this.search(selector).resolve( 
       f -> f.of(E_Walker_CannotFindName([],selector))
     ).flat_map(
@@ -39,7 +39,7 @@ class Machine<T,G,K,E>{
   public function call(selector:Selector):Call<T,G,K,E>{
     return Call.lift(
       Fletcher.Anon(
-        (ipt:Context<T,G,K>,cont:Terminal<Res<Plan<T,G,K>,WalkerFailure<E>>,Noise>) -> to(selector).fold(
+        (ipt:Context<T,G,K>,cont:Terminal<Upshot<Plan<T,G,K>,WalkerFailure<E>>,Noise>) -> to(selector).fold(
           (ok)  -> cont.receive(ok.reply().forward(ipt)),
           (e)   -> cont.value(__.reject(e)).serve()
         )
