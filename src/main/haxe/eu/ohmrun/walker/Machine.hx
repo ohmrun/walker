@@ -39,7 +39,7 @@ class Machine<T,G,K,E>{
   public function call(selector:Selector):Call<T,G,K,E>{
     return Call.lift(
       Fletcher.Anon(
-        (ipt:Context<T,G,K>,cont:Terminal<Upshot<Plan<T,G,K>,WalkerFailure<E>>,Noise>) -> to(selector).fold(
+        (ipt:Context<T,G,K>,cont:Terminal<Upshot<Plan<T,G,K>,WalkerFailure<E>>,Nada>) -> to(selector).fold(
           (ok)  -> cont.receive(ok.reply().forward(ipt)),
           (e)   -> cont.value(__.reject(e)).serve()
         )

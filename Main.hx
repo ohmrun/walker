@@ -4,7 +4,7 @@ using stx.Nano;
 using stx.Pico;
 using stx.Log;
 
-import tink.core.Noise;
+import stx.pico.Nada;
 
 #if js
 import js.Browser.*;
@@ -21,7 +21,7 @@ class Main{
       final el                  = document.createDivElement();
             el.setAttribute("id",'app');
             document.body.appendChild(el);
-      final value               = hxx('<HistoryTestRootView history=${new History({state : Noise})}/>');
+      final value               = hxx('<HistoryTestRootView history=${new History({state : Nada})}/>');
             coconut.ui.Renderer.mount(el,value);
 	}
 }

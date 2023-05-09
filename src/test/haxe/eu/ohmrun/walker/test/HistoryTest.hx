@@ -13,7 +13,7 @@ class HistoryTest extends TestCase{
       final el                  = document.createDivElement();
             el.setAttribute("id",'app');
             document.body.appendChild(el);
-      final value               = hxx('<HistoryTestRootView history=${new History({state : Noise})}/>');
+      final value               = hxx('<HistoryTestRootView history=${new History({state : Nada})}/>');
             coconut.ui.Renderer.mount(el,value);
     }   
   }
@@ -35,7 +35,7 @@ class HistoryTestSubView extends coconut.ui.View{
           call=${
             () -> {
               string = "second subview string";
-              return Future.sync(Noise);
+              return Future.sync(Nada);
             }
           }
     >
@@ -45,7 +45,7 @@ class HistoryTestSubView extends coconut.ui.View{
     <Rack name="two">     
       <HistoryTestSubSubView link="/three" />   
     </Rack>
-    <Swap call=${() -> Future.sync(Noise)}  name="three">   <HistoryTestSubSubView2/>  </Swap>  
+    <Swap call=${() -> Future.sync(Nada)}  name="three">   <HistoryTestSubSubView2/>  </Swap>  
   </Swap>
   ';
 }
@@ -56,10 +56,10 @@ class HistoryTestSubSubView extends coconut.ui.View{
 class HistoryTestSubSubView2 extends coconut.ui.View{
   public function render() '
     <div>
-      <Swap call=${() -> Future.sync(Noise)}  name="a">     
+      <Swap call=${() -> Future.sync(Nada)}  name="a">     
         <HistoryTestLeaf text="/three/b" link="/three/b"/>  
       </Swap>
-      <Swap call=${() -> Future.sync(Noise)}  name="b">    
+      <Swap call=${() -> Future.sync(Nada)}  name="b">    
         <HistoryTestLeaf text="/three/c" link="/three/c" />  
       </Swap>
       <Swap                                   name="c">                      
