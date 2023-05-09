@@ -25,7 +25,10 @@
     "unit" : {
       "--macro" : [
         "include('eu.ohmrun.walker',true,[])"
-      ]
+      ],
+      "javascript" : {
+        "-js" : "build/javascript/unit.js"
+      }
     }
   },
   "run" : {
