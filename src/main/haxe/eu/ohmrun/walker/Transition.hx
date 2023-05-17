@@ -6,7 +6,7 @@ class Transition<T,G,K,E>{
   public var data(default,null):TransitionData<T,G,K,E>;
   
   public function new(machine,data){
-    __.assert().exists(data);
+    __.assert().that().exists(data);
     this.machine = machine;
     this.data    = data;
   }

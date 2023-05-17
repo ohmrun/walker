@@ -23,7 +23,7 @@ typedef NodeSpecDef<T,G,K,E> = {
     return self;
   }
   public function toString(){
-    return __.that().exists().apply(this.rest).is_ok().if_else(
+    return __.assert().expect().exists().apply(this.rest).is_ok().if_else(
       () -> this.rest.is_defined().if_else(
         () -> '${this.id}(${this.rest})',
         ()  -> '${this.id}'
