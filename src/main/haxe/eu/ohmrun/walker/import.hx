@@ -18,5 +18,6 @@ using stx.Log;
 using stx.Coroutine;
 
 using eu.ohmrun.Fletcher;
+using eu.ohmrun.fletcher.Core;
 
 using eu.ohmrun.Walker;
